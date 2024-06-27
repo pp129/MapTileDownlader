@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '/@/views/Home.vue';
 import About from '/@/views/About.vue';
 
@@ -10,7 +10,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: constantRoutes,
 });
 
