@@ -7,11 +7,11 @@ const APP_VERSION = import.meta.env.VITE_APP_VERSION;
 </script>
 
 <template>
-  <img
-    alt="Vue logo"
-    src="../assets/logo.svg"
-    width="150"
-  />
+  <!--  <img-->
+  <!--    alt="Vue logo"-->
+  <!--    src="../assets/logo.svg"-->
+  <!--    width="150"-->
+  <!--  />-->
 
   <p>
     <!-- Example how to inject current app version to UI -->
