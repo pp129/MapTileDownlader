@@ -1,5 +1,6 @@
 import {node} from '../../.electron-vendors.cache.json';
 import {join} from 'node:path';
+import commonjs from 'vite-plugin-commonjs';
 
 const PACKAGE_ROOT = __dirname;
 const PROJECT_ROOT = join(PACKAGE_ROOT, '../..');
@@ -17,6 +18,7 @@ const config = {
       '/@/': join(PACKAGE_ROOT, 'src') + '/',
     },
   },
+  plugins: [commonjs()],
   build: {
     ssr: true,
     sourcemap: 'inline',

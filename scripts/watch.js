@@ -3,6 +3,7 @@
 import {build, createServer} from 'vite';
 import electronPath from 'electron';
 import {spawn} from 'child_process';
+import commonjs from 'vite-plugin-commonjs';
 
 /** @type 'production' | 'development'' */
 const mode = (process.env.MODE = process.env.MODE || 'development');
@@ -34,6 +35,7 @@ function setupMainPackageWatcher({resolvedUrls}) {
       watch: {},
     },
     plugins: [
+      commonjs(),
       {
         name: 'reload-app-on-main-package-change',
         writeBundle() {
@@ -76,6 +78,7 @@ function setupPreloadPackageWatcher({ws}) {
       watch: {},
     },
     plugins: [
+      commonjs(),
       {
         name: 'reload-page-on-preload-package-change',
         writeBundle() {

@@ -1,11 +1,13 @@
 import {app, BrowserWindow} from 'electron';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import ipcHandle from './ipcMain';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
     show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
+      nodeIntegrationInWorker: true, // nodeIntegrationInWorker 可以独立于nodeIntegration使用，但sandbox必须不能设置为true
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: false, // Sandbox disabled because the demo of preload script depend on the Node.js api
@@ -53,6 +55,8 @@ async function createWindow() {
     );
   }
 
+
+
   return browserWindow;
 }
 
@@ -60,6 +64,7 @@ async function createWindow() {
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
 export async function restoreOrCreateWindow() {
+
   let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
 
   if (window === undefined) {
@@ -71,4 +76,5 @@ export async function restoreOrCreateWindow() {
   }
 
   window.focus();
+  ipcHandle(window);
 }
