@@ -2,6 +2,7 @@
 
 import {chrome} from '../../.electron-vendors.cache.json';
 import vue from '@vitejs/plugin-vue';
+import { createHtmlPlugin } from 'vite-plugin-html';
 import {renderer} from 'unplugin-auto-expose';
 import {join} from 'node:path';
 
@@ -43,6 +44,13 @@ const config = {
   },
   plugins: [
     vue(),
+    createHtmlPlugin({
+      inject: {
+        data: {
+          title: '地图瓦片下载器 v' + process.env.npm_package_version,
+        },
+      },
+    }),
     renderer.vite({
       preloadEntry: join(PACKAGE_ROOT, '../preload/src/index.ts'),
     }),

@@ -1,17 +1,33 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
+import {useRouter} from 'vue-router';
 import TMap from '/@/utils/t-map';
 import {useMessage} from 'naive-ui';
 import SaveDialog from '/@/components/SaveDialog.vue';
+import MapKey from '/@/components/MapKey.vue';
+import AreaChoose from '/@/components/AreaChoose.vue';
 import ProgressControl from '/@/components/ProgressControl.vue';
 import FileSave from '../utils/file-save.js';
+import {getMapList} from '/@/utils/layer-list';
+import {getKeys} from '/@/utils/map-key';
 
+const layerList = getMapList();
 window.$message = useMessage();
+
+const router = useRouter();
 let map = ref();
 let visible = ref(false);
+let keyVisible = ref(false);
+let areaVisible = ref(false);
 let extent = ref([]);
+let options = ref([...layerList]);
+let currentLayer = ref();
+let saveLayers = ref([]);
+let zoom = ref(0);
+let center = ref([0, 0]);
 const getMapViewExtent = ()=> {
   extent.value = map.value.getMapViewExtent();
+  // saveLayers.value = {};
   visible.value = true;
 };
 const save = (params) => {
@@ -19,6 +35,7 @@ const save = (params) => {
   visible.value = false;
   const layers = map.value.map.getLayers();
   const tileLayers = layers.getArray().filter(layer => layer.get('base'));
+  console.log(tileLayers);
   const mapConfig = {
     titleLayer: tileLayers,
     config: {
@@ -37,13 +54,63 @@ const save = (params) => {
   console.log(data.mapConfig.projection.code);
   new FileSave(data);
 };
+const handleSelect = (key, layer) => {
+  const parent = options.value.find(item => { return item.uuid === layer.pid; });
+
+  const {mapboxKey, tdtKey} = getKeys();
+  if ((parent.value === 'Mapbox' && !mapboxKey) || (parent.value === 'Tdt' && !tdtKey)) {
+    window.$message.warning(`请设置${parent.label}地图Key`);
+    keyVisible.value = true;
+    return false;
+  }
+  currentLayer.value =  { parent: parent.value, layer: layer };
+  map.value.switchBaseLayer(currentLayer.value);
+};
+const setArea = () => {
+  areaVisible.value = true;
+};
+const onAreaChoose = ({geojson}) => {
+  map.value.addGeometry(geojson);
+};
+const zoomEnd = (evt) => {
+  getMapView();
+  evt.map.once('moveend', (evt) => {
+    zoomEnd(evt);
+  });
+};
+const getMapView = () => {
+  zoom.value = map.value.map.getView().getZoom();
+  center.value = map.value.map.getView().getCenter();
+};
+const toAbout = ()=>{
+  router.push({
+    name: 'About',
+  });
+};
 onMounted(() => {
   map.value = new TMap('map');
+  // 层级变化
+  getMapView();
+  map.value.map.getView().once('change:resolution', () => {
+    map.value.map.once('moveend', (evt) => {
+      zoomEnd(evt);
+    });
+  });
 });
 </script>
 
 <template>
   <div id="map"></div>
+  <n-card
+    hoverable
+    size="small"
+    class="info-card"
+  >
+    <n-flex>
+      <span>当前层级：{{ zoom }}</span>
+      <span>可视区域中心点 {{ center }}</span>
+    </n-flex>
+  </n-card>
   <n-float-button
     position="absolute"
     right="40px"
@@ -78,6 +145,92 @@ onMounted(() => {
       ></path></svg>
     </n-icon>
     <template #menu>
+      <!-- 获取当前视窗经纬度范围 -->
+      <n-tooltip
+        trigger="hover"
+        placement="right"
+      >
+        <template #trigger>
+          <span style="display: inline-block">
+            <n-button
+              position="relative"
+              type="info"
+              circle
+              size="large"
+              @click="getMapViewExtent"
+            >
+              <n-icon size="25">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  viewBox="0 0 20 20"
+                ><g fill="none"><path
+                  d="M9 5.5a4.5 4.5 0 0 1 4-4.473v3.766l-.646-.647a.5.5 0 0 0-.708.707l1.5 1.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0-.708-.707L14 4.793V1.027A4.5 4.5 0 1 1 9 5.5zm2 2a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5zm6 2.243a5.507 5.507 0 0 1-1 .657v.6h-3.5a.5.5 0 0 0-.5.5a2 2 0 1 1-4 0a.5.5 0 0 0-.5-.5H4V8h4.6a5.463 5.463 0 0 1-.393-1H4a2 2 0 0 1 2-2h2.022a5.48 5.48 0 0 1 .185-1H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V9.743zM16 15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3h3.041a3 3 0 0 0 5.918 0H16v3z"
+                  fill="currentColor"
+                ></path></g></svg>
+              </n-icon>
+            </n-button>
+          </span>
+        </template>
+        下载当前视窗经纬度范围的栅格瓦片
+      </n-tooltip>
+      <!-- 地图切换 -->
+      <n-tooltip
+        trigger="hover"
+        placement="right"
+      >
+        <template #trigger>
+          <span style="display: inline-block">
+            <n-dropdown
+              :options="options"
+              placement="left-center"
+              trigger="click"
+              :key-field="'uuid'"
+              @select="handleSelect"
+            >
+              <n-button
+                color="#fff"
+                circle
+                size="large"
+              >
+                <n-icon
+                  size="25"
+                  color="#000"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 512 512"
+                  ><path
+                    d="M434.8 137.65l-149.36-68.1c-16.19-7.4-42.69-7.4-58.88 0L77.3 137.65c-17.6 8-17.6 21.09 0 29.09l148 67.5c16.89 7.7 44.69 7.7 61.58 0l148-67.5c17.52-8 17.52-21.1-.08-29.09z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="32"
+                  ></path><path
+                    d="M160 308.52l-82.7 37.11c-17.6 8-17.6 21.1 0 29.1l148 67.5c16.89 7.69 44.69 7.69 61.58 0l148-67.5c17.6-8 17.6-21.1 0-29.1l-79.94-38.47"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="32"
+                  ></path><path
+                    d="M160 204.48l-82.8 37.16c-17.6 8-17.6 21.1 0 29.1l148 67.49c16.89 7.7 44.69 7.7 61.58 0l148-67.49c17.7-8 17.7-21.1.1-29.1L352 204.48"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="32"
+                  ></path></svg>
+                </n-icon>
+              </n-button>
+            </n-dropdown>
+          </span>
+        </template>
+        地图切换
+      </n-tooltip>
+      <!-- 选择区域 -->
       <n-tooltip
         trigger="hover"
         placement="right"
@@ -86,34 +239,83 @@ onMounted(() => {
           <span style="display: inline-block">
             <n-float-button
               position="relative"
-              @click="getMapViewExtent"
+              @click="setArea"
             >
-              <n-icon>
+              <n-icon size="20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
-                  viewBox="0 0 24 24"
-                ><g
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ><path d="M10 12H3l3-3m0 6l-3-3"></path><path d="M14 12h7l-3-3m0 6l3-3"></path><path d="M3 6V3h18v3"></path><path d="M3 18v3h18v-3"></path></g></svg>
+                  viewBox="0 0 32 32"
+                ><path
+                  d="M31 29.586l-4.689-4.688a8.028 8.028 0 1 0-1.414 1.414L29.586 31zM20 26a6 6 0 1 1 6-6a6.007 6.007 0 0 1-6 6z"
+                  fill="currentColor"
+                ></path><path
+                  d="M8 26H4a2.002 2.002 0 0 1-2-2v-4h2v4h4z"
+                  fill="currentColor"
+                ></path><path
+                  d="M2 12h2v4H2z"
+                  fill="currentColor"
+                ></path><path
+                  d="M26 8h-2V4h-4V2h4a2.002 2.002 0 0 1 2 2z"
+                  fill="currentColor"
+                ></path><path
+                  d="M12 2h4v2h-4z"
+                  fill="currentColor"
+                ></path><path
+                  d="M4 8H2V4a2.002 2.002 0 0 1 2-2h4v2H4z"
+                  fill="currentColor"
+                ></path></svg>
               </n-icon>
             </n-float-button>
           </span>
         </template>
-        获取当前视窗经纬度范围
+        选择区域
       </n-tooltip>
+      <!-- about -->
+      <n-float-button
+        position="relative"
+        @click="toAbout"
+      >
+        <n-icon size="25">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+          ><path
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="40"
+            d="M196 220h64v172"
+          ></path><path
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-miterlimit="10"
+            stroke-width="40"
+            d="M187 396h138"
+          ></path><path
+            d="M256 160a32 32 0 1 1 32-32a32 32 0 0 1-32 32z"
+            fill="currentColor"
+          ></path></svg>
+        </n-icon>
+      </n-float-button>
     </template>
   </n-float-button>
   <save-dialog
     v-model:visible="visible"
-    base-layer=""
+    :base-layer="saveLayers"
     :extent="extent"
     @ok="save"
   ></save-dialog>
+  <map-key
+    v-model:visible="keyVisible"
+  ></map-key>
+  <area-choose
+    v-model:visible="areaVisible"
+    @choose="onAreaChoose"
+  ></area-choose>
   <progress-control></progress-control>
 </template>
 
@@ -151,5 +353,14 @@ onMounted(() => {
     background-color: #999999;
   }
 }
-
+.info-card {
+  width: auto;
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  opacity: 0.7;
+  &:hover {
+    opacity: 1;
+  }
+}
 </style>

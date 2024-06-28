@@ -43,7 +43,6 @@ export default function getParams() {
       Satellite: {
         url: 'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}',
       },
-
     },
     Amap: {
       Normal: {

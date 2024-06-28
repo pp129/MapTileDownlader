@@ -13,17 +13,20 @@ import Utils from './utils';
 class TileLayerCollection {
 
     static getTdtTileLayer(id, options = {}) {
-        const baselayers = [];
+        const baseLayers = [];
         const baseLayer = new TdtTileLayer(Utils.uuid(), options);
-        baselayers.push(baseLayer);
+      baseLayers.push(baseLayer);
 
         if (options.style) {
             options.style = options.style + '_Label';
             const baseLayer1 = new TdtTileLayer(Utils.uuid(), options);
-            baselayers.push(baseLayer1);
+          baseLayers.push(baseLayer1);
         }
 
-        return new GroupTileLayer(id, baselayers, {attribution: options.attribution});
+      return new LayerGroup({
+        layers: baseLayers,
+        properties: options,
+      });
 
     }
 

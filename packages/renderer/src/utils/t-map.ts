@@ -1,7 +1,7 @@
 // 地图
 import Map from 'ol/Map';
 import View from 'ol/View';
-import {defaults as defaultControls, Attribution, FullScreen, Rotate, ScaleLine, Zoom, ZoomSlider} from 'ol/control';
+import {defaults as defaultControls, Attribution, Rotate, ScaleLine, Zoom, ZoomSlider} from 'ol/control';
 import {
   DragRotateAndZoom,
   defaults as defaultInteractions,
@@ -10,6 +10,7 @@ import TileLayerCollection from './TileLayerCollection/TileLayerCollection';
 import {defaultMap} from './layer-list';
 import VectorSource from 'ol/source/Vector';
 import {Vector as VectorLayer} from 'ol/layer';
+import GeoJSON from 'ol/format/GeoJSON';
 import { addCoordinateTransforms, addProjection, Projection, transform } from 'ol/proj';
 import { applyTransform} from 'ol/extent';
 import projzh from '/@/utils/projConvert';
@@ -58,26 +59,40 @@ class TMap{
     const map = new Map({
       target: id,
       view:new View({
-        center: [108.552500, 34.322700],
+        center: [108.5525, 34.3227],
         zoom: 5,
         constrainResolution: true,
         projection: 'EPSG:4326',
       }),
       interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
-      controls: defaultControls().extend([new ZoomSlider(),new ScaleLine(),new Attribution,new Zoom(),new Rotate(),new FullScreen()]),
+      controls: defaultControls().extend([
+        new ZoomSlider(),
+        new ScaleLine(),
+        new Attribution,
+        new Zoom(),
+        new Rotate(),
+      ]),
     });
     const source = new VectorSource();
     this._vectorLayer = new VectorLayer({
-      source: source,
+      source,
       style: {
-        'fill-color': 'rgba(255, 255, 255, 0.2)',
+        'fill-color': 'rgba(255, 255, 255, 0.6)',
         'stroke-color': '#ffcc33',
         'stroke-width': 2,
         'circle-radius': 7,
         'circle-fill-color': '#ffcc33',
       },
+      zIndex: 9,
     });
+    map.addLayer(this._vectorLayer);
     this.map = map;
+    // 鼠标悬浮
+    this.map.on('pointermove', evt => {
+      const pixel = this.map.getEventPixel(evt.originalEvent);
+      const hit = this.map.hasFeatureAtPixel(pixel);
+      this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    });
     this.switchBaseLayer(defaultMap());
   }
   getMap() {
@@ -98,6 +113,7 @@ class TMap{
       ...param.layer.exteral,
     });
     baseLayer.set('base', true);
+    baseLayer.setZIndex(0);
     console.log(baseLayer.getProperties());
     const layers = this.map.getLayers().getArray().filter(x => x.get('base'));
     if (layers && layers.length > 0) {
@@ -171,16 +187,12 @@ class TMap{
     }
   }
   // 添加geojson至地图
-  addGeometry(geojson) {
-    const geometry = maptalks.GeoJSON.toGeometry(geojson, geo => {
-      geo.setSymbol({
-        lineColor: '#34495e',
-        lineWidth: 2,
-        polygonFill: 'rgb(135,196,240)',
-        polygonOpacity: 0.6,
-      });
-    });
-    this._vectorLayer.addGeometry(geometry);
+  addGeometry(geojson:any) {
+    this._vectorLayer.getSource().clear();
+    const features = new GeoJSON().readFeatures(geojson);
+    const featureGeometry = features[0].getGeometry();
+    this._vectorLayer.getSource().addFeatures(features);
+    this.map.getView().fit(featureGeometry,{nearest:true});
   }
   // 自动适应地图范围
   fitExtent() {

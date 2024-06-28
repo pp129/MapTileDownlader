@@ -15,6 +15,7 @@ const props = defineProps({
   },
 });
 let showModal = ref(false);
+let showMerge = ref(false);
 let savePath = ref('');
 let maxZoom = ref('18');
 let minZoom = ref('1');
@@ -96,7 +97,7 @@ onBeforeUnmount(()=>{
         label-placement="left"
         title="下载范围"
         size="small"
-        column="1"
+        :column="1"
         class="descriptions"
       >
         <n-descriptions-item label="xmin">
@@ -143,15 +144,22 @@ onBeforeUnmount(()=>{
       <div class="item">
         <span class="label">下载路径：</span>
         <div class="value">
-          <input
-            v-model="savePath"
-            type="text"
-            disabled="disabled"
-            style="width:215px;"
-          >
-          <button @click="setFolder">
-            选择
-          </button>
+          <n-input-group>
+            <n-input
+              v-model:value="savePath"
+              disabled
+              type="text"
+              placeholder="选择下载路径"
+              :style="{ width: '80%' }"
+            />
+            <n-button
+              type="primary"
+              ghost
+              @click="setFolder"
+            >
+              选择
+            </n-button>
+          </n-input-group>
         </div>
       </div>
     </div>
@@ -169,6 +177,34 @@ onBeforeUnmount(()=>{
   </n-modal>
 </template>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.dialog-content{
+  width: 100%;
+  padding: 8px 16px;
+  .item{
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+  }
+  .label{
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+  }
+  .value{
+    display: inline-block;
+    width: calc(100% - 80px);
+  }
+}
+.descriptions{
+  ::v-deep(.n-descriptions-header){
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+  ::v-deep(.n-descriptions-table-content__label){
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+  }
+}
 </style>
