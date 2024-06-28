@@ -41,9 +41,10 @@ jobs:
       - run: npm ci
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-          NODE_OPTIONS: "--max_old_space_size=4096"
 
       - run: npm run build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
       - name: Compile artifacts ${{ inputs.dry-run && '' || 'and upload them to github release' }}
         # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
