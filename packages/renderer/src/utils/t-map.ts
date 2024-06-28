@@ -61,7 +61,7 @@ class TMap{
       view:new View({
         center: [108.5525, 34.3227],
         zoom: 5,
-        constrainResolution: true,
+        constrainResolution: false,
         projection: 'EPSG:4326',
       }),
       interactions: defaultInteractions().extend([new DragRotateAndZoom()]),
@@ -201,6 +201,7 @@ class TMap{
 
   getMapViewExtent(){
     return this.map.getView().calculateExtent(this.map.getSize());
+    // return this._vectorLayer.getExtent();
   }
 }
 

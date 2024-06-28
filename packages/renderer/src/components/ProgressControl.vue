@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {onMounted,ref} from 'vue';
-import { setProgressDom, showProgress } from '../utils/progress';
+import { setProgressDom, showProgress,setProgress } from '../utils/progress';
 const progressSuccess = ref();
 const progressError = ref();
 const progress = ref();
 const container = ref();
 const closeProgress = () => {
+  setProgress({success: 0, error: 0, percentage: 0,count:0});
   showProgress(false);
 };
 onMounted(()=>{

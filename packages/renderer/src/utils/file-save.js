@@ -21,7 +21,7 @@ class FileSave{
     //   url: 'https://map.geoq.cn/MapServer/tile/9/207/421',
     //   savePath: '',
     // };
-    console.log(param);
+    // console.log(param);
     window.electron.saveImage(param);
 
   }

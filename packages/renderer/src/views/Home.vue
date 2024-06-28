@@ -27,6 +27,7 @@ let zoom = ref(0);
 let center = ref([0, 0]);
 const getMapViewExtent = ()=> {
   extent.value = map.value.getMapViewExtent();
+  // extent.value = map.value._vectorLayer.getSource().getFeatures()[0].getGeometry().getExtent();
   // saveLayers.value = {};
   visible.value = true;
 };

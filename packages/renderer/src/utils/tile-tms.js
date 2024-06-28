@@ -59,10 +59,10 @@ export class TileTMS {
       let minLat = Math.min(bottom_tile, top_tile);
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
-      for (let x = minLong; x < maxLong; x++) {
+      for (let x = minLong; x <= maxLong; x++) {
         const temppath = downloadPath + z + '/' + x;
         this.apiEnsureDirSync(temppath);
-        for (let y = minLat; y < maxLat; y++) {
+        for (let y = minLat; y <= maxLat; y++) {
           const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
           // const str3 = this.titleLayer.getTileUrl(x, y, z);
           const path2 = temppath + '/' + y + pictureType;
@@ -153,10 +153,10 @@ export class TileTMSList {
       let minLat = Math.min(bottom_tile, top_tile);
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
-      for (let x = minLong; x < maxLong; x++) {
+      for (let x = minLong; x <= maxLong; x++) {
         const temppath = downloadPath + z + '/' + x;
         this.apiEnsureDirSync(temppath);
-        for (let y = minLat; y < maxLat; y++) {
+        for (let y = minLat; y <= maxLat; y++) {
           const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
           // const str3 = layer.getTileUrl(x, y, z);
           const path2 = temppath + '/' + y + pictureType;
@@ -241,10 +241,10 @@ export class TileTMSList {
       let minLat = Math.min(bottom_tile, top_tile);
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
-      for (let x = minLong; x < maxLong; x++) {
+      for (let x = minLong; x <= maxLong; x++) {
         const temppath = downloadPath + z + '/' + x;
         this.apiEnsureDirSync(temppath);
-        for (let y = minLat; y < maxLat; y++) {
+        for (let y = minLat; y <= maxLat; y++) {
           const str3 = layers.map(ll => {return {url: ll.getTileUrl(x, y, z), isLabel: ll.config().style.includes('_Label')};});
           const path2 = temppath + '/' + y + pictureType;
           list.push({zoom: z, layers:str3, savePath:path2});
