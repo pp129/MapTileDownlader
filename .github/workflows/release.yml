@@ -42,6 +42,8 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
+      - run: export NODE_OPTIONS="--max-old-space-size=40900" # tried to increase it more but all fails
+
       - run: npm run build
 
       - name: Compile artifacts ${{ inputs.dry-run && '' || 'and upload them to github release' }}
