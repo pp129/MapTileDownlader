@@ -38,20 +38,17 @@ jobs:
         with:
           cache: 'npm'
 
-      - name: install in macOS arm64
-        if: ${{ runner.os }} == 'macOS'
+      - if: ${{ runner.os }} == 'macOS'
         run: npm ci --cpu=arm64 --os=darwin
         env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - name: install in Linux
-        if: ${{ runner.os }} == 'Linux'
+      - if: ${{ runner.os }} == 'Linux'
         run: npm ci --cpu=x64 --os=linux --libc=glibc
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - name: install in Windows
-        if: ${{ runner.os }} == 'Windows'
+      - if: ${{ runner.os }} == 'Windows'
         run: npm ci
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
