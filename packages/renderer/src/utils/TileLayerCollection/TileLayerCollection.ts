@@ -67,7 +67,10 @@ class TileLayerCollection {
             options.style = options.style + '_Label';
             const baseLayer1 = new TencentTileLayer(Utils.uuid(), options);
             baseLayers.push(baseLayer1);
-            return new GroupTileLayer(id, baseLayers, {attribution: options.attribution});
+            return new LayerGroup({
+              layers: baseLayers,
+              properties: options,
+            });
         }
     }
 

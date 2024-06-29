@@ -38,9 +38,19 @@ jobs:
         with:
           cache: 'npm'
 
-      - run: npm ci
+      - name: install in macOS arm64
+        if: runner.os == 'macOS'
+        run: npm ci
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          NODE_OPTIONS: "--cpu=arm64 --os=darwin"
+
+      - name: install in Linux
+        if: runner.os == 'Linux'
+        run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          NODE_OPTIONS: "--cpu=x64 --os=linux --libc=glibc"
 
       - run: npm run build
         env:
