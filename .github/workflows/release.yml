@@ -39,11 +39,11 @@ jobs:
           cache: 'npm'
 
       - run: |
-          if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+          if [ ${{ matrix.os }} == windows-latest ]; then
             npm ci
-          else if [[ ${{ matrix.os }} == "macos-latest" ]]; then
+          else if [ ${{ matrix.os }} == macos-latest ]; then
             npm ci --cpu=arm64 --os=darwin
-          else if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
+          else if [ ${{ matrix.os }} == ubuntu-latest ]; then
             npm ci --cpu=x64 --os=linux --libc=glibc
           fi
 
