@@ -38,17 +38,17 @@ jobs:
         with:
           cache: 'npm'
 
-      - if: ${{ runner.os }} == 'macOS'
+      - if: ${{ matrix.os }} == 'macos-latest'
         run: npm ci --cpu=arm64 --os=darwin
         env:
            PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - if: ${{ runner.os }} == 'Linux'
+      - if: ${{ matrix.os }} == 'ubuntu-latest'
         run: npm ci --cpu=x64 --os=linux --libc=glibc
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - if: ${{ runner.os }} == 'Windows'
+      - if: ${{ matrix.os }} == 'windows-latest'
         run: npm ci
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
