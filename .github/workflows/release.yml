@@ -28,6 +28,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
+        args: [ '--cpu=arm64 --os=darwin', '--cpu=x64 --os=linux --libc=glibc', '']
 
     runs-on: ${{ matrix.os }}
 
@@ -38,14 +39,7 @@ jobs:
         with:
           cache: 'npm'
 
-      - run: |
-          if [ ${{ matrix.os }} == windows-latest ]; then
-            npm ci
-          elif [ ${{ matrix.os }} == macos-latest ]; then
-            npm ci --cpu=arm64 --os=darwin
-          elif [ ${{ matrix.os }} == ubuntu-latest ]; then
-            npm ci --cpu=x64 --os=linux --libc=glibc
-          fi
+      - run: npm ci ${{ matrix.args }}
 
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
