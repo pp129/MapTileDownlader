@@ -43,8 +43,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: 'npm'
-
-      - run: npm ci ${{ matrix.args }}
+      - run: npm ci
+      - run: npm install sharp ${{ matrix.args }}
 
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
