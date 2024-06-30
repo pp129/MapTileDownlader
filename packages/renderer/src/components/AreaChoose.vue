@@ -53,6 +53,7 @@ onBeforeUnmount(()=>{
       <n-input
         v-model:value="pattern"
         placeholder="搜索"
+        clearable
       />
       <n-tree
         :show-irrelevant-nodes="false"

@@ -23,6 +23,7 @@ import {
   NInput,
   NInputGroup,
   NFlex,
+  NTag,
 } from 'naive-ui';
 import 'ol/ol.css';
 // 通用字体
@@ -50,6 +51,7 @@ const naive = create({
     NInput,
     NInputGroup,
     NFlex,
+    NTag,
   ],
 });
 

@@ -25,6 +25,7 @@ let currentLayer = ref();
 let saveLayers = ref([]);
 let zoom = ref(0);
 let center = ref([0, 0]);
+let areaName = ref('');
 const getMapViewExtent = ()=> {
   extent.value = map.value.getMapViewExtent();
   // extent.value = map.value._vectorLayer.getSource().getFeatures()[0].getGeometry().getExtent();
@@ -70,7 +71,9 @@ const handleSelect = (key, layer) => {
 const setArea = () => {
   areaVisible.value = true;
 };
-const onAreaChoose = ({geojson}) => {
+const onAreaChoose = ({geojson,option}) => {
+  console.log('onAreaChoose',option);
+  areaName.value = option.areaName;
   map.value.addGeometry(geojson);
 };
 const zoomEnd = (evt) => {
@@ -80,13 +83,18 @@ const zoomEnd = (evt) => {
   });
 };
 const getMapView = () => {
-  zoom.value = map.value.map.getView().getZoom();
-  center.value = map.value.map.getView().getCenter();
+  zoom.value = Math.floor(map.value.map.getView().getZoom());
+  const mapCenter = map.value.map.getView().getCenter();
+  center.value = [Number(mapCenter[0].toFixed(6)), Number(mapCenter[1].toFixed(6))];
 };
 const toAbout = ()=>{
   router.push({
     name: 'About',
   });
+};
+const onTagClose = ()=>{
+  areaName.value = '';
+  map.value._vectorLayer.getSource().clear();
 };
 onMounted(() => {
   map.value = new TMap('map');
@@ -108,8 +116,16 @@ onMounted(() => {
     class="info-card"
   >
     <n-flex>
-      <span>当前层级：{{ zoom }}</span>
-      <span>可视区域中心点 {{ center }}</span>
+      <span style="line-height: 28px;">当前层级：{{ zoom }}</span>
+      <span style="line-height: 28px;">可视区域中心点 {{ center }}</span>
+      <n-tag
+        v-show="areaName"
+        closable
+        type="success"
+        @close="onTagClose"
+      >
+        {{ areaName }}
+      </n-tag>
     </n-flex>
   </n-card>
   <n-float-button
@@ -272,36 +288,6 @@ onMounted(() => {
         </template>
         选择区域
       </n-tooltip>
-      <!-- about -->
-      <n-float-button
-        position="relative"
-        @click="toAbout"
-      >
-        <n-icon size="25">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 512 512"
-          ><path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="40"
-            d="M196 220h64v172"
-          ></path><path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-miterlimit="10"
-            stroke-width="40"
-            d="M187 396h138"
-          ></path><path
-            d="M256 160a32 32 0 1 1 32-32a32 32 0 0 1-32 32z"
-            fill="currentColor"
-          ></path></svg>
-        </n-icon>
-      </n-float-button>
     </template>
   </n-float-button>
   <save-dialog

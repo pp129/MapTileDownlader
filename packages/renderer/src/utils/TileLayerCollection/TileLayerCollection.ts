@@ -13,16 +13,15 @@ import Utils from './utils';
 class TileLayerCollection {
 
     static getTdtTileLayer(id, options = {}) {
-        const baseLayers = [];
-        const baseLayer = new TdtTileLayer(Utils.uuid(), options);
+      const baseLayers = [];
+      const baseLayer = new TdtTileLayer(Utils.uuid(), options);
       baseLayers.push(baseLayer);
-
-        if (options.style) {
-            options.style = options.style + '_Label';
-            const baseLayer1 = new TdtTileLayer(Utils.uuid(), options);
-          baseLayers.push(baseLayer1);
-        }
-
+      if (options.style) {
+        options.style = options.style + '_Label';
+        const baseLayer1 = new TdtTileLayer(Utils.uuid(), options);
+        baseLayers.push(baseLayer1);
+      }
+      options.group = true;
       return new LayerGroup({
         layers: baseLayers,
         properties: options,
@@ -59,7 +58,8 @@ class TileLayerCollection {
 
     static getTencentTileLayer(id, options = {}) {
         if (options.style === 'Normal') {
-            return new TencentTileLayer(id, options);
+          options.group = false;
+          return new TencentTileLayer(id, options);
         } else {
             const baseLayers = [];
             const baseLayer = new TencentTileLayer(Utils.uuid(), options);
@@ -67,6 +67,7 @@ class TileLayerCollection {
             options.style = options.style + '_Label';
             const baseLayer1 = new TencentTileLayer(Utils.uuid(), options);
             baseLayers.push(baseLayer1);
+          options.group = true;
             return new LayerGroup({
               layers: baseLayers,
               properties: options,
