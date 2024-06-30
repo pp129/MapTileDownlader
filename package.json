@@ -1,7 +1,7 @@
 {
   "name": "map-tile-downloader",
   "description": "",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "type": "module",
   "author": {
@@ -79,5 +79,12 @@
         "arm64"
       ]
     }
+  },
+  "build": {
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/sharp/**/*",
+      "**/node_modules/@img/**/*"
+    ]
   }
 }
