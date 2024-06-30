@@ -27,8 +27,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ macos-latest, ubuntu-latest, windows-latest ]
-        args: [ '--cpu=arm64 --os=darwin', '--cpu=x64 --os=linux --libc=glibc', '']
+#        os: [ macos-latest, ubuntu-latest, windows-latest ]
+#        args: [ '--cpu=arm64 --os=darwin', '--cpu=x64 --os=linux --libc=glibc', '']
+        os:
+            - macos-latest
+            - args: --cpu=arm64 --os=darwin
+            - ubuntu-latest
+            - args: --cpu=arm64 --os=darwin
+            - windows-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -39,7 +45,7 @@ jobs:
         with:
           cache: 'npm'
 
-      - run: npm ci ${{ matrix.args }}
+      - run: npm ci ${{ matrix.os.args }}
 
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
