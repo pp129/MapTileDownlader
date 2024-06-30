@@ -30,7 +30,7 @@ jobs:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
         include:
           - os: macos-latest
-            args: '--cpu=arm64 --os=darwin'
+            args: '--include=optional'
           - os: ubuntu-latest
             args: '--cpu=x64 --os=linux --libc=glibc'
 #         - args: [ '--cpu=arm64 --os=darwin', '--cpu=x64 --os=linux --libc=glibc', '']
