@@ -1,5 +1,5 @@
 import {dialog, ipcMain} from 'electron';
-
+import { requestHandle } from './ipHandle';
 const fse = require('fs-extra');
 const fs = require('fs');
 const sharp = require('sharp');
@@ -30,7 +30,8 @@ function ipcHandle(win) {
         .toFile(args.savePath),
     );
     // got.stream(args.url).pipe(sharpStream);
-    request.get(args.url).pipe(sharpStream);
+    // request.get(args.url).pipe(sharpStream);
+    requestHandle(request.get(args.url)).pipe(sharpStream);
     Promise.all(promises)
       .then(() => {
         win.webContents.send('imageDownloadDone', {
