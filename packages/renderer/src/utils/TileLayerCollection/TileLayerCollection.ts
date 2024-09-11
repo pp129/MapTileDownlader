@@ -42,12 +42,13 @@ class TileLayerCollection {
     getAmapTileLayer(id, options = {}) {
       console.log(options);
         if (options.style === 'Satellite') {
-            const baseLayers = [];
-            const baseLayer = new AmapTileLayer(Utils.uuid(), options);
-            baseLayers.push(baseLayer);
-            options.style = options.style + '_Label';
-            const baseLayer1 = new AmapTileLayer(Utils.uuid(), options);
-            baseLayers.push(baseLayer1);
+          const baseLayers = [];
+          const baseLayer = new AmapTileLayer(Utils.uuid(), options);
+          baseLayers.push(baseLayer);
+          options.style = options.style + '_Label';
+          const baseLayer1 = new AmapTileLayer(Utils.uuid(), options);
+          baseLayers.push(baseLayer1);
+          options.group = true;
             return new LayerGroup({
               layers: baseLayers,
               properties: options,
@@ -62,12 +63,12 @@ class TileLayerCollection {
           options.group = false;
           return new TencentTileLayer(id, options);
         } else {
-            const baseLayers = [];
-            const baseLayer = new TencentTileLayer(Utils.uuid(), options);
-            baseLayers.push(baseLayer);
-            options.style = options.style + '_Label';
-            const baseLayer1 = new TencentTileLayer(Utils.uuid(), options);
-            baseLayers.push(baseLayer1);
+          const baseLayers = [];
+          const baseLayer = new TencentTileLayer(Utils.uuid(), options);
+          baseLayers.push(baseLayer);
+          options.style = options.style + '_Label';
+          const baseLayer1 = new TencentTileLayer(Utils.uuid(), options);
+          baseLayers.push(baseLayer1);
           options.group = true;
             return new LayerGroup({
               layers: baseLayers,
@@ -96,6 +97,7 @@ class TileLayerCollection {
         options.style = options.style + '_Label';
         const baseLayer1 = new BaiduTileLayer(Utils.uuid(), options);
         baseLayers.push(baseLayer1);
+        options.group = true;
         return new LayerGroup({
           layers: baseLayers,
           properties: options,

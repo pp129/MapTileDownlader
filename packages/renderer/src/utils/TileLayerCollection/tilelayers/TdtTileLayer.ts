@@ -10,6 +10,7 @@ class TDTTileLayer extends Tile {
         // projection: 'EPSG:3857',
         crossOrigin: 'anonymous',
       };
+      options.urlTemplate = params().TDT[style].url;
       const tile = new XYZ(xyzOpt);
       const layerOpt = { ...options, source: tile };
       super(layerOpt);

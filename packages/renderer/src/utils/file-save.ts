@@ -1,6 +1,6 @@
 // 地图
 import {TileTMS, TileTMSList, TileTMSListMerge} from './tile-tms';
-import TileBaidu from './tile-baidu';
+import TileBaidu, {TileBaiduList} from './tile-baidu';
 import {getState} from './progress';
 class FileSave {
   constructor(data: any) {
@@ -36,7 +36,8 @@ class FileSave {
     window.electron.ensureDir(path);
   }
   downloadTms(data: any) {
-    if (Array.isArray(data.mapConfig.titleLayer) && data.mapConfig.titleLayer.length > 1) {
+    console.log('download',data.mapConfig);
+    if (data.mapConfig.config.group) {
       if (data.mergeLayers) {
         new TileTMSListMerge(data, this.saveImagesAndMerge, this.ensureDirSync);
       } else {
@@ -47,7 +48,12 @@ class FileSave {
     }
   }
   downloadBaidu(data: any) {
-    new TileBaidu(data, this.saveImage, this.ensureDirSync);
+    if (data.mapConfig.config.group) {
+      new TileBaiduList(data, this.saveImage, this.ensureDirSync);
+    }else {
+      new TileBaidu(data, this.saveImage, this.ensureDirSync);
+    }
+
   }
 }
 

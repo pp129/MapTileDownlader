@@ -10,6 +10,7 @@ import FileSave from '/@/utils/file-save';
 import {getMapList} from '/@/utils/layer-list';
 import {getKeys} from '/@/utils/map-key';
 import type {Layer} from 'ol/layer';
+import type {Projection} from 'ol/proj';
 
 const layerList = getMapList();
 window.$message = useMessage();
@@ -36,17 +37,33 @@ const save = (params: TypeSave) => {
   // console.log(params);
   visible.value = false;
   const layers = map.value.map.getLayers();
-  const tileLayers = layers.getArray().filter((layer: Layer) => layer.get('base'));
-  console.log(tileLayers);
-  const urls = tileLayers[0].getSource().getUrls();
+  const baseLayers = layers.getArray().filter((layer: Layer) => layer.get('base'));
+  console.log(baseLayers[0]);
+  let urlTemplate = '';
+  let projection:Projection;
+  let tileLayers= baseLayers;
+  // 先判断是否是groupLayer
+  if(baseLayers[0].getProperties().group) {
+    const urls = baseLayers[0].getLayers().getArray()[0].getSource().getUrls();
+    urlTemplate =  urls ? urls[0] : baseLayers[0].getLayers().getArray()[0].getProperties().urlTemplate;
+    projection = baseLayers[0].getLayers().getArray()[0].getSource().getProjection();
+    tileLayers = baseLayers[0].getLayers().getArray();
+  }else {
+    const urls = baseLayers[0].getSource().getUrls();
+    urlTemplate =  urls ? urls[0] : baseLayers[0].getProperties().urlTemplate;
+    projection = baseLayers[0].getSource().getProjection();
+  }
+
   const mapConfig = {
     titleLayer: tileLayers,
     config: {
-      urlTemplate: urls ? urls[0] : tileLayers[0].getProperties().urlTemplate,
+      urlTemplate,
+      group: baseLayers[0].getProperties().group,
     },
+    mergeLayers: false,
     projection: {
-      ...tileLayers[0].getSource().getProjection(),
-      code: tileLayers[0].getSource().getProjection().getCode(),
+      ...projection,
+      code: projection.getCode(),
     },
   };
   const data = {

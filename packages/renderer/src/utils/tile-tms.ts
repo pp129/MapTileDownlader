@@ -1,5 +1,5 @@
 // 瓦片转换
-import { setState, setProgress } from './progress';
+import {setState, setProgress, getState} from './progress';
 // 经纬度转瓦片行列号
 function long2tile(lon, zoom) {
   return (Math.floor((lon + 180) / 360 * Math.pow(2, zoom)));
@@ -94,6 +94,7 @@ export class TileTMS {
     };
     download();
     window.electron.imageDownloadDone(state => {
+      if(!getState()) return;
       if (state.state === 'completed') {
         statistics.success++;
       } else {
@@ -139,7 +140,7 @@ export class TileTMSList {
     const west_edge = this.mapExtent.xmin;
     const east_edge = this.mapExtent.xmax;
     // 下载地址
-    const baseUrl = this.urlTemplate;
+    const baseUrl = layer.getProperties().urlTemplate || this.urlTemplate;
     const pictureType = '.png';
     // 遍历URL，获取数据
     const list = [];
@@ -188,6 +189,7 @@ export class TileTMSList {
     };
     download();
     window.electron.imageDownloadDone(state => {
+      if(!getState()) return;
       if (state.state === 'completed') {
         statistics.success++;
       } else {
@@ -275,6 +277,7 @@ export class TileTMSList {
     };
     download();
     window.electron.imageDownloadDone(state => {
+      if(!getState()) return;
       if (state.state === 'completed') {
         statistics.success++;
       } else {

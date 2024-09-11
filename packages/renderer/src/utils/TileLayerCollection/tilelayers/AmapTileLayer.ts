@@ -10,6 +10,7 @@ class AmapTileLayer extends Tile {
         projection: 'GCJ:02',
         crossOrigin: 'anonymous',
       };
+      options.urlTemplate = params().Amap[style].url;
       const tile = new XYZ(xyzOpt);
       const layerOpt = { ...options, source: tile };
       super(layerOpt);
