@@ -1,5 +1,5 @@
 // 瓦片转换
-import { setState, setProgress } from './progress';
+import {setState, setProgress, getState} from './progress';
 
 // const x_pi = Math.PI * 3000.0 / 180.0;
 // const pi = Math.PI;  // π
@@ -81,7 +81,7 @@ function convertLL2MC(T) {
   let cD = null;
   T.x = getLoop(T.x, -180, 180);
   T.y = getRange(T.y, -74, 74);
-  let cB = T;
+  const cB = T;
   for (let cC = 0; cC < LLBAND.length; cC++) {
     if (cB.y >= LLBAND[cC]) {
       cD = LL2MC[cC];
@@ -141,7 +141,7 @@ class TileBaidu {
   }
   calcTiles() {
     // 当前绝对路径
-    const downloadPath = this.rootPath + '\\';
+    const downloadPath = this.rootPath + '/';
 
     // 下载范围
     const zmin = this.minZoom;
@@ -166,12 +166,13 @@ class TileBaidu {
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
       for (let x = minLong; x < maxLong; x++) {
-        const temppath = downloadPath + z + '\\' + x;
+        const temppath = downloadPath + z + '/' + x;
         this.apiEnsureDirSync(temppath);
         for (let y = minLat; y < maxLat; y++) {
-          // const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
-          const str3 = this.titleLayer.getTileUrl(x, y, z);
-          const path2 = temppath + '\\' + y + pictureType;
+          const baseUrl = this.urlTemplate;
+          const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+          // const str3 = this.titleLayer.getTileUrl(x, y, z);
+          const path2 = temppath + '/' + y + pictureType;
           list.push({ zoom: z, url: str3, savePath: path2 });
         }
       }
@@ -200,6 +201,9 @@ class TileBaidu {
     };
     download();
     window.electron.imageDownloadDone(state => {
+
+      if(!getState()) return;
+
       if (state.state === 'completed') {
         statistics.success++;
       } else {

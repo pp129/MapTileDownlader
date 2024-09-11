@@ -4,9 +4,6 @@ import {XYZ} from 'ol/source';
 
 class TDTTileLayer extends Tile {
     constructor(id, options = {}) {
-        // const style = options.style || 'Normal';
-        // options.urlTemplate = params().TDT[style].url;
-        // super(id, options);
       const style = options.style || 'Normal';
       const xyzOpt = {
         url: params().TDT[style].url,
@@ -14,7 +11,7 @@ class TDTTileLayer extends Tile {
         crossOrigin: 'anonymous',
       };
       const tile = new XYZ(xyzOpt);
-      const layerOpt = { ...options, ...{ source: tile } };
+      const layerOpt = { ...options, source: tile };
       super(layerOpt);
     }
 }

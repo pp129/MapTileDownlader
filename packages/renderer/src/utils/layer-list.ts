@@ -1,7 +1,17 @@
 // 地图列表
-import {uuid} from './random';
+import {nanoid} from 'nanoid';
+
 const BaiduConstomSubdomains = [0, 1, 2]; // 百度自定义瓦片子域名
-const mapList = [
+interface typeMapList {
+  label: string;
+  value: string;
+  projection?: string;
+  exteral?: any;
+  uuid?: string;
+  pid?: string;
+  children?: typeMapList[];
+}
+const mapList: typeMapList[] = [
   {
     label: '高德',
     value: 'Amap',
@@ -9,7 +19,7 @@ const mapList = [
       {
         label: '电子地图',
         value: 'Normal',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: '高德-电子地图',
         },
@@ -17,7 +27,7 @@ const mapList = [
       {
         label: '卫星地图',
         value: 'Satellite',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: '高德-卫星地图',
         },
@@ -31,7 +41,7 @@ const mapList = [
       {
         label: '电子地图',
         value: 'Normal',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: [0, 1, 2, 3],
           attribution: '百度-电子地图',
@@ -40,7 +50,7 @@ const mapList = [
       {
         label: '卫星地图',
         value: 'Satellite',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: [0, 1, 2, 3],
           attribution: '百度-卫星地图',
@@ -49,7 +59,7 @@ const mapList = [
       {
         label: '午夜蓝',
         value: 'midnight',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-午夜蓝',
@@ -58,7 +68,7 @@ const mapList = [
       {
         label: '清新蓝',
         value: 'light',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-清新蓝',
@@ -67,7 +77,7 @@ const mapList = [
       {
         label: '黑夜',
         value: 'dark',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-黑夜',
@@ -76,7 +86,7 @@ const mapList = [
       {
         label: '红色警戒',
         value: 'redalert',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-红色警戒',
@@ -85,7 +95,7 @@ const mapList = [
       {
         label: '精简(仿google)',
         value: 'googlelite',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-精简',
@@ -94,7 +104,7 @@ const mapList = [
       {
         label: '自然绿',
         value: 'grassgreen',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-自然绿',
@@ -103,7 +113,7 @@ const mapList = [
       {
         label: '浪漫粉',
         value: 'pink',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-浪漫粉',
@@ -112,7 +122,7 @@ const mapList = [
       {
         label: '青春绿',
         value: 'darkgreen',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-青春绿',
@@ -121,7 +131,7 @@ const mapList = [
       {
         label: '清新蓝绿',
         value: 'bluish',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-清新蓝绿',
@@ -130,7 +140,7 @@ const mapList = [
       {
         label: '高端灰',
         value: 'grayscale',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-高端灰',
@@ -139,7 +149,7 @@ const mapList = [
       {
         label: '强边界',
         value: 'hardedge',
-        prejection: 'baidu',
+        projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-强边界',
@@ -154,7 +164,7 @@ const mapList = [
       {
         label: '电子地图',
         value: 'Normal',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: '腾讯-电子电梯',
         },
@@ -162,7 +172,7 @@ const mapList = [
       {
         label: '卫星地图',
         value: 'Satellite',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: '腾讯-卫星地图',
         },
@@ -170,7 +180,7 @@ const mapList = [
       {
         label: '地形图',
         value: 'Terrain',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: '腾讯-地形图',
         },
@@ -184,7 +194,7 @@ const mapList = [
       {
         label: '电子地图',
         value: 'Normal',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'OpenStreetMap-电子地图',
         },
@@ -192,7 +202,7 @@ const mapList = [
       {
         label: '骑行图',
         value: 'Bike',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'OpenStreetMap-骑行图',
         },
@@ -200,7 +210,7 @@ const mapList = [
       {
         label: '交通图',
         value: 'Transport',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'OpenStreetMap-交通图',
         },
@@ -208,7 +218,7 @@ const mapList = [
       {
         label: '山地图',
         value: 'Humanitarian',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'OpenStreetMap-山地图',
         },
@@ -222,7 +232,7 @@ const mapList = [
       {
         label: '地图(白)',
         value: 'Light',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
 
         exteral: {
           attribution: 'CartoDb-白',
@@ -231,7 +241,7 @@ const mapList = [
       {
         label: '地图(黑)',
         value: 'Dark',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
 
         exteral: {
           attribution: 'CartoDb-黑',
@@ -246,7 +256,7 @@ const mapList = [
       {
         label: '彩色',
         value: 'Colour',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'ArcGIS-彩色',
         },
@@ -254,7 +264,7 @@ const mapList = [
       {
         label: '灰度',
         value: 'Gray',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'ArcGIS-灰度',
         },
@@ -262,7 +272,7 @@ const mapList = [
       {
         label: '午夜蓝',
         value: 'Midnightblue',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'ArcGIS-午夜蓝',
         },
@@ -276,7 +286,7 @@ const mapList = [
       {
         label: '普通',
         value: 'Normal',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           subdomains: ['0', '1', '2'],
           attribution: '天地图-普通地图',
@@ -285,7 +295,7 @@ const mapList = [
       {
         label: '卫星',
         value: 'Satellite',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           subdomains: ['0', '1', '2'],
           attribution: '天地图-卫星地图',
@@ -294,7 +304,7 @@ const mapList = [
       {
         label: '地形',
         value: 'Terrain',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           subdomains: ['0', '1', '2'],
           attribution: '天地图-地形图',
@@ -309,7 +319,7 @@ const mapList = [
       {
         label: '街景',
         value: 'Streets',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-街景',
         },
@@ -317,7 +327,7 @@ const mapList = [
       {
         label: '暗黑',
         value: 'Dark',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-暗黑',
         },
@@ -325,7 +335,7 @@ const mapList = [
       {
         label: '浅黑',
         value: 'LightDark',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-浅黑',
         },
@@ -333,7 +343,7 @@ const mapList = [
       {
         label: '卫星',
         value: 'Satellite',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-卫星',
         },
@@ -341,7 +351,7 @@ const mapList = [
       {
         label: '浅色',
         value: 'Light',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-浅色',
         },
@@ -349,7 +359,7 @@ const mapList = [
       {
         label: 'Emerald',
         value: 'Emerald',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-Emerald',
         },
@@ -357,7 +367,7 @@ const mapList = [
       {
         label: '白色',
         value: 'White',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-白色',
         },
@@ -365,7 +375,7 @@ const mapList = [
       {
         label: '红色',
         value: 'Red',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-红色',
         },
@@ -373,7 +383,7 @@ const mapList = [
       {
         label: 'Outdoors',
         value: 'Outdoors',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-Outdoors',
         },
@@ -381,7 +391,7 @@ const mapList = [
       {
         label: 'StreetsSatellite',
         value: 'StreetsSatellite',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-StreetsSatellite',
         },
@@ -389,7 +399,7 @@ const mapList = [
       {
         label: 'Comic',
         value: 'Comic',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-Comic',
         },
@@ -397,7 +407,7 @@ const mapList = [
       {
         label: '建筑',
         value: 'Building',
-        prejection: 'EPSG:3857',
+        projection: 'EPSG:3857',
         exteral: {
           attribution: 'Mapbox-建筑',
         },
@@ -409,17 +419,21 @@ const mapList = [
 export function defaultMap() {
   // {parent: 'Amap',layer:{ label: '电子地图',
   //         value: 'Normal',
-  //         prejection: 'EPSG:3857',
+  //         projection: 'EPSG:3857',
   //         exteral: {
   //           attribution: '高德-电子地图',
   //         },}}
-  return { parent: mapList[0].value, layer: mapList[0].children[0] };
+  let layer = null;
+  if (mapList.length > 0 && mapList[0]) {
+    layer = mapList[0].children;
+  }
+  return {parent: mapList[0].value, layer: layer ? layer[0] : null};
 }
 
 export function getMapList() {
   const list = [...mapList];
-  const setUid = function (item) {
-    item.uuid = uuid();
+  const setUid = function (item: typeMapList) {
+    item.uuid = nanoid();
     if (Array.isArray(item.children)) {
       item.children.forEach(child => {
         child.pid = item.uuid;

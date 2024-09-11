@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import {ref,watch,defineEmits,onBeforeUnmount,computed} from 'vue';
+import {ref, watch, defineEmits, onBeforeUnmount, computed} from 'vue';
+
 const props = defineProps({
   visible: {
     required: true,
     type: Boolean,
   },
   extent: {
+    type: Array as () => Array<number>,
     required: true,
-    type: Array,
+    validator: (value: Array<number>) => value.length === 4,
   },
   baseLayer: {
     required: true,
@@ -19,6 +21,7 @@ let showMerge = ref(false);
 let savePath = ref('');
 let maxZoom = ref('18');
 let minZoom = ref('1');
+let mergeLayers = ref(false);
 
 const downloadExtent = computed(() => {
   console.log(props.extent);
@@ -35,7 +38,7 @@ watch(
     showModal.value = props.visible;
   },
 );
-const emit = defineEmits(['cancel','update:visible','ok']);
+const emit = defineEmits(['cancel', 'update:visible', 'ok']);
 const reset = () => {
   savePath.value = '';
   maxZoom.value = '18';
@@ -43,7 +46,7 @@ const reset = () => {
 };
 const cancel = () => {
   reset();
-  emit('update:visible',false);
+  emit('update:visible', false);
   emit('cancel');
 };
 const ok = () => {
@@ -56,8 +59,8 @@ const ok = () => {
   if (!minZoom.value) {
     return window.$message.warning('请输入最小层级');
   }
-  const minZoomVal = parseInt(Number(minZoom.value));
-  const maxZoomVal = parseInt(Number(maxZoom.value));
+  const minZoomVal = parseInt(minZoom.value);
+  const maxZoomVal = parseInt(maxZoom.value);
   if (isNaN(minZoomVal) || isNaN(maxZoomVal)) {
     return window.$message.warning('层级格式错误，请输入非负整数');
   }
@@ -77,7 +80,7 @@ const setFolder = async () => {
   if (result.canceled) return;
   savePath.value = result.filePaths[0];
 };
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
   showModal.value = props.visible;
 });
 </script>
@@ -119,7 +122,7 @@ onBeforeUnmount(()=>{
           v-model="maxZoom"
           class="value"
           type="text"
-        >
+        />
       </div>
       <div class="item">
         <span class="label">最小层级：</span>
@@ -127,7 +130,7 @@ onBeforeUnmount(()=>{
           v-model="minZoom"
           class="value"
           type="text"
-        >
+        />
       </div>
       <div
         v-if="showMerge"
@@ -138,7 +141,7 @@ onBeforeUnmount(()=>{
           <input
             v-model="mergeLayers"
             type="checkbox"
-          >是否合并
+          />是否合并
         </div>
       </div>
       <div class="item">
@@ -150,7 +153,7 @@ onBeforeUnmount(()=>{
               disabled
               type="text"
               placeholder="选择下载路径"
-              :style="{ width: '80%' }"
+              :style="{width: '80%'}"
             />
             <n-button
               type="primary"
@@ -164,9 +167,7 @@ onBeforeUnmount(()=>{
       </div>
     </div>
     <template #action>
-      <n-button @click="cancel">
-        取消
-      </n-button>
+      <n-button @click="cancel"> 取消 </n-button>
       <n-button
         type="info"
         @click="ok"
@@ -178,30 +179,30 @@ onBeforeUnmount(()=>{
 </template>
 
 <style lang="scss" scoped>
-.dialog-content{
+.dialog-content {
   width: 100%;
   padding: 8px 16px;
-  .item{
+  .item {
     margin: 8px 0;
     display: flex;
     align-items: center;
   }
-  .label{
+  .label {
     display: inline-block;
     width: 80px;
     text-align: right;
   }
-  .value{
+  .value {
     display: inline-block;
     width: calc(100% - 80px);
   }
 }
-.descriptions{
-  ::v-deep(.n-descriptions-header){
+.descriptions {
+  ::v-deep(.n-descriptions-header) {
     font-size: 14px;
     margin-bottom: 3px;
   }
-  ::v-deep(.n-descriptions-table-content__label){
+  ::v-deep(.n-descriptions-table-content__label) {
     display: inline-block;
     width: 80px;
     text-align: right;

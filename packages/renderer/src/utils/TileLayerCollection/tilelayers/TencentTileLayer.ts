@@ -23,7 +23,7 @@ class TencentTileLayer extends Tile {
       };
       options.urlTemplate = params().Tencent[style].url;
       const tile = new XYZ(xyzOpt);
-      const layerOpt = { ...options, ...{ source: tile } };
+      const layerOpt = { ...options, source: tile};
       super(layerOpt);
     }
 }

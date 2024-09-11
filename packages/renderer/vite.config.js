@@ -2,7 +2,7 @@
 
 import {chrome} from '../../.electron-vendors.cache.json';
 import vue from '@vitejs/plugin-vue';
-import { createHtmlPlugin } from 'vite-plugin-html';
+import {createHtmlPlugin} from 'vite-plugin-html';
 import {renderer} from 'unplugin-auto-expose';
 import {join} from 'node:path';
 
@@ -20,6 +20,7 @@ const config = {
   resolve: {
     alias: {
       '/@/': join(PACKAGE_ROOT, 'src') + '/',
+      '@types/': join(PACKAGE_ROOT, 'types') + '/',
     },
   },
   base: './',

@@ -136,20 +136,23 @@ export default function getParams() {
     },
     Baidu: {
       Normal: {
-        // url: 'http://api0.map.bdimg.com/customimage/tile?&x=3&y=1&z=5&scale=1&customid=normal',
-        url: 'https://gss{s}.bdstatic.com/8bo_dTSlRsgBo1vgoIiO_jowehsv/tile/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20170927',
+        url: 'https://maponline1.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20220113&from=jsapi2_0',
+        // url: 'https://gss{s}.bdstatic.com/8bo_dTSlRsgBo1vgoIiO_jowehsv/tile/?qt=tile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20170927',
       },
       Satellite: {
-        url: 'http://shangetu{s}.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
+        url: 'https://maponline3.bdimg.com/starpic/?qt=satepc&u=x={x};y={y};z={z};v=009;type=sate&fm=46&udt=20240910',
+      },
+      Satellite_Label: {
+        url: 'https://maponline0.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=sl&udt=20240910',
       },
       midnight: {
-        url: 'http://api{s}.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&scale=1&customid=midnight',
+        url: 'http://api0.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&udt=20220819&scale=1&ak=5ieMMexWmzB9jivTq6oCRX9j&customid=midnight',
       },
       light: {
-        url: 'http://api{s}.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&scale=1&customid=light',
+        url: 'http://api0.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&udt=20220819&scale=1&ak=5ieMMexWmzB9jivTq6oCRX9j&customid==light',
       },
       dark: {
-        url: 'http://api{s}.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&scale=1&customid=dark',
+        url: 'http://api0.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&udt=20220819&scale=1&ak=5ieMMexWmzB9jivTq6oCRX9j&&customid=dark',
       },
       redalert: {
         url: 'http://api{s}.map.bdimg.com/customimage/tile?&x={x}&y={y}&z={z}&scale=1&customid=redalert',
