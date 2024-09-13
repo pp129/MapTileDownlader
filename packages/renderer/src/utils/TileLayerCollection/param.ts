@@ -1,6 +1,5 @@
 import { getKeys } from '/@/utils/map-key';
 
-
 export default function getParams() {
   const { mapboxKey, tdtKey } = getKeys();
 
@@ -58,11 +57,9 @@ export default function getParams() {
     Tencent: {
       Normal: {
         url: 'http://rt0.map.gtimg.com/realtimerender?z={z}&x={x}&y={y}&type=vector&style=0',
-
       },
       Satellite: {
         url: 'http://p0.map.gtimg.com/sateTiles/{z}/{m}/{n}/{x}_{y}.jpg',
-
       },
       Satellite_Label: {
         url: 'http://rt3.map.gtimg.com/tile?z={z}&x={x}&y={y}&type=vector&styleid=3&version=117',
@@ -98,7 +95,8 @@ export default function getParams() {
     },
     Mapbox: {
       Streets: {
-        url: 'http://a.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + mapboxKey,
       },
       Dark: {
         url: 'http://a.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=' + mapboxKey,
@@ -107,25 +105,34 @@ export default function getParams() {
         url: 'http://a.tiles.mapbox.com/v3/spatialdev.map-c9z2cyef/{z}/{x}/{y}.png',
       },
       Satellite: {
-        url: 'http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + mapboxKey,
       },
       Light: {
         url: 'http://a.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=' + mapboxKey,
       },
       Emerald: {
-        url: 'http://a.tiles.mapbox.com/v4/mapbox.emerald/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/mapbox.emerald/{z}/{x}/{y}.png?access_token=' + mapboxKey,
       },
       White: {
-        url: 'http://a.tiles.mapbox.com/v4/examples.map-h67hf2ic/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/examples.map-h67hf2ic/{z}/{x}/{y}.png?access_token=' +
+          mapboxKey,
       },
       Red: {
-        url: 'http://a.tiles.mapbox.com/v4/examples.map-h68a1pf7,examples.npr-stations/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/examples.map-h68a1pf7,examples.npr-stations/{z}/{x}/{y}.png?access_token=' +
+          mapboxKey,
       },
       Outdoors: {
-        url: 'http://a.tiles.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token=' + mapboxKey,
       },
       StreetsSatellite: {
-        url: 'http://a.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token=' + mapboxKey,
+        url:
+          'http://a.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token=' +
+          mapboxKey,
       },
       Comic: {
         url: 'http://a.tiles.mapbox.com/v4/mapbox.comic/{z}/{x}/{y}.png?access_token=' + mapboxKey,
@@ -183,4 +190,3 @@ export default function getParams() {
 
   return params;
 }
-

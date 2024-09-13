@@ -4,8 +4,8 @@ import HomePage from '/@/views/HomePage.vue';
 import About from '/@/views/About.vue';
 
 export const constantRoutes: Array<RouteRecordRaw> = [
-  {path: '/', name: 'Home', component: HomePage},
-  {path: '/about', name: 'About', component: About},
+  { path: '/', name: 'Home', component: HomePage },
+  { path: '/about', name: 'About', component: About },
 ];
 
 const router = createRouter({

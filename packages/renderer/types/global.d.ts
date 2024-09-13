@@ -1,4 +1,4 @@
-import type {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider';
+import type { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider';
 
 export {};
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ref,watch,defineEmits,onBeforeUnmount,onMounted} from 'vue';
-import {getKeys, setKeys} from '/@/utils/map-key';
+import { ref, watch, defineEmits, onBeforeUnmount, onMounted } from 'vue';
+import { getKeys, setKeys } from '/@/utils/map-key';
 const props = defineProps({
   visible: {
     required: true,
@@ -10,7 +10,7 @@ const props = defineProps({
 let showModal = ref(false);
 let tdtKey = ref('');
 let mapboxKey = ref('');
-const emit = defineEmits(['hide','update:visible']);
+const emit = defineEmits(['hide', 'update:visible']);
 watch(
   () => props.visible,
   () => {
@@ -24,7 +24,7 @@ const init = () => {
 };
 const cancel = () => {
   emit('hide');
-  emit('update:visible',false);
+  emit('update:visible', false);
 };
 const ok = () => {
   setKeys({
@@ -33,10 +33,10 @@ const ok = () => {
   });
   cancel();
 };
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
   showModal.value = props.visible;
 });
-onMounted(()=>{
+onMounted(() => {
   init();
 });
 </script>
@@ -50,9 +50,7 @@ onMounted(()=>{
     :on-close="cancel"
     preset="dialog"
   >
-    <template #header>
-      地图Key配置
-    </template>
+    <template #header> 地图Key配置 </template>
     <div class="dialog-content">
       <div class="item">
         <span class="label">天地图：</span>
@@ -60,7 +58,7 @@ onMounted(()=>{
           v-model="tdtKey"
           class="value"
           type="text"
-        >
+        />
       </div>
       <div class="item">
         <span class="label">MapBox：</span>
@@ -68,13 +66,11 @@ onMounted(()=>{
           v-model="mapboxKey"
           class="value"
           type="text"
-        >
+        />
       </div>
     </div>
     <template #action>
-      <n-button @click="cancel">
-        取消
-      </n-button>
+      <n-button @click="cancel"> 取消 </n-button>
       <n-button
         type="info"
         @click="ok"
@@ -85,6 +81,4 @@ onMounted(()=>{
   </n-modal>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

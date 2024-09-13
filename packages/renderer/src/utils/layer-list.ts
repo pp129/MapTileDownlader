@@ -1,5 +1,5 @@
 // 地图列表
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 
 const BaiduConstomSubdomains = [0, 1, 2]; // 百度自定义瓦片子域名
 interface typeMapList {
@@ -427,7 +427,7 @@ export function defaultMap() {
   if (mapList.length > 0 && mapList[0]) {
     layer = mapList[0].children;
   }
-  return {parent: mapList[0].value, layer: layer ? layer[0] : null};
+  return { parent: mapList[0].value, layer: layer ? layer[0] : null };
 }
 
 export function getMapList() {

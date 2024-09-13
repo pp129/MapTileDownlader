@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import {onMounted,ref} from 'vue';
-import {setProgressDom, showProgress, setProgress, setState} from '../utils/progress';
+import { onMounted, ref } from 'vue';
+import { setProgressDom, showProgress, setProgress, setState } from '../utils/progress';
 const progressSuccess = ref();
 const progressError = ref();
 const progress = ref();
 const container = ref();
 const emit = defineEmits(['close']);
 const closeProgress = () => {
-  setProgress({success: 0, error: 0, percentage: 0,count:0});
+  setProgress({ success: 0, error: 0, percentage: 0, count: 0 });
   setState(false);
   showProgress(false);
   emit('close');
 };
-onMounted(()=>{
+onMounted(() => {
   setProgressDom({
     success: progressSuccess.value,
     error: progressError.value,
@@ -45,14 +45,12 @@ onMounted(()=>{
         class="error"
       />
     </div>
-    <button @click="closeProgress">
-      关闭
-    </button>
+    <button @click="closeProgress"> 关闭 </button>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.box-progress{
+.box-progress {
   position: absolute;
   right: 10px;
   bottom: 10px;
@@ -62,10 +60,10 @@ onMounted(()=>{
   padding: 8px;
   z-index: 100;
   display: none;
-  .progress{
+  .progress {
     width: 100%;
   }
-  .item{
+  .item {
     text-align: left;
   }
 }

@@ -1,16 +1,18 @@
-import {dialog, ipcMain} from 'electron';
+import { dialog, ipcMain } from 'electron';
 import { requestHandle } from './ipHandle';
 const fse = require('fs-extra');
 const fs = require('fs');
 const sharp = require('sharp');
 const request = require('superagent');
 
-async function handleFileOpen (properties: string[]) {
-  return await dialog.showOpenDialog({properties: ['openDirectory','createDirectory'].concat(properties)});
+async function handleFileOpen(properties: string[]) {
+  return await dialog.showOpenDialog({
+    properties: ['openDirectory', 'createDirectory'].concat(properties),
+  });
 }
 ipcMain.handle('dialog:openFile', handleFileOpen);
 ipcMain.handle('show-dialog', async () => {
-  return await dialog.showOpenDialog({properties: ['openFile', 'openDirectory']});
+  return await dialog.showOpenDialog({ properties: ['openFile', 'openDirectory'] });
 });
 // 确保目录存在，不存在则创建
 ipcMain.on('ensure-dir', (event, args) => {
@@ -72,7 +74,7 @@ function ipcHandle(win) {
           sharp(imgBack)
             .composite(
               imgBuffer.map(input => {
-                return {input, gravity: 'centre', blend: 'saturate'};
+                return { input, gravity: 'centre', blend: 'saturate' };
               }),
             )
             .toFile(args.savePath)

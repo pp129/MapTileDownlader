@@ -1,5 +1,5 @@
-import {node} from '../../.electron-vendors.cache.json';
-import {join} from 'node:path';
+import { node } from '../../.electron-vendors.cache.json';
+import { join } from 'node:path';
 import commonjs from 'vite-plugin-commonjs';
 
 const PACKAGE_ROOT = __dirname;

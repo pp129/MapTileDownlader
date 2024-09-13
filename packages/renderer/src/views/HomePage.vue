@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 import TMap from '/@/utils/t-map';
-import {useMessage} from 'naive-ui';
+import { useMessage } from 'naive-ui';
 import SaveDialog from '/@/components/SaveDialog.vue';
 import MapKey from '/@/components/MapKey.vue';
 import AreaChoose from '/@/components/AreaChoose.vue';
 import ProgressControl from '/@/components/ProgressControl.vue';
 import FileSave from '/@/utils/file-save';
-import {getMapList} from '/@/utils/layer-list';
-import {getKeys} from '/@/utils/map-key';
-import type {Layer} from 'ol/layer';
-import type {Projection} from 'ol/proj';
+import { getMapList } from '/@/utils/layer-list';
+import { getKeys } from '/@/utils/map-key';
+import type { Layer } from 'ol/layer';
+import type { Projection } from 'ol/proj';
 
 const layerList = getMapList();
 window.$message = useMessage();
@@ -40,17 +40,19 @@ const save = (params: TypeSave) => {
   const baseLayers = layers.getArray().filter((layer: Layer) => layer.get('base'));
   console.log(baseLayers[0]);
   let urlTemplate = '';
-  let projection:Projection;
-  let tileLayers= baseLayers;
+  let projection: Projection;
+  let tileLayers = baseLayers;
   // 先判断是否是groupLayer
-  if(baseLayers[0].getProperties().group) {
+  if (baseLayers[0].getProperties().group) {
     const urls = baseLayers[0].getLayers().getArray()[0].getSource().getUrls();
-    urlTemplate =  urls ? urls[0] : baseLayers[0].getLayers().getArray()[0].getProperties().urlTemplate;
+    urlTemplate = urls
+      ? urls[0]
+      : baseLayers[0].getLayers().getArray()[0].getProperties().urlTemplate;
     projection = baseLayers[0].getLayers().getArray()[0].getSource().getProjection();
     tileLayers = baseLayers[0].getLayers().getArray();
-  }else {
+  } else {
     const urls = baseLayers[0].getSource().getUrls();
-    urlTemplate =  urls ? urls[0] : baseLayers[0].getProperties().urlTemplate;
+    urlTemplate = urls ? urls[0] : baseLayers[0].getProperties().urlTemplate;
     projection = baseLayers[0].getSource().getProjection();
   }
 
@@ -74,32 +76,32 @@ const save = (params: TypeSave) => {
   console.log(data.mapConfig.projection.code);
   new FileSave(data);
 };
-const handleSelect = (key:any, layer:any) => {
+const handleSelect = (key: any, layer: any) => {
   const parent = options.value.find(item => {
     return item.uuid === layer.pid;
   });
-  if(parent) {
-    const {mapboxKey, tdtKey} = getKeys();
+  if (parent) {
+    const { mapboxKey, tdtKey } = getKeys();
     if ((parent.value === 'Mapbox' && !mapboxKey) || (parent.value === 'Tdt' && !tdtKey)) {
       window.$message.warning(`请设置${parent.label}地图Key`);
       keyVisible.value = true;
       return false;
     }
-    currentLayer.value = {parent: parent.value, layer: layer};
+    currentLayer.value = { parent: parent.value, layer: layer };
     map.value.switchBaseLayer(currentLayer.value);
   }
 };
 const setArea = () => {
   areaVisible.value = true;
 };
-const onAreaChoose = ({geojson, option}) => {
+const onAreaChoose = ({ geojson, option }) => {
   console.log('onAreaChoose', option);
   areaName.value = option.areaName;
   map.value.addGeometry(geojson);
 };
-const zoomEnd = (evt:Event) => {
+const zoomEnd = (evt: Event) => {
   getMapView();
-  evt.map.once('moveend', (evt:Event) => {
+  evt.map.once('moveend', (evt: Event) => {
     zoomEnd(evt);
   });
 };
@@ -120,7 +122,7 @@ onMounted(() => {
   // 层级变化
   getMapView();
   map.value.map.getView().once('change:resolution', () => {
-    map.value.map.once('moveend', (evt:Event) => {
+    map.value.map.once('moveend', (evt: Event) => {
       zoomEnd(evt);
     });
   });

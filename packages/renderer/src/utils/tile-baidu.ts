@@ -1,5 +1,5 @@
 // 瓦片转换
-import {setState, setProgress, getState} from './progress';
+import { setState, setProgress, getState } from './progress';
 
 // const x_pi = Math.PI * 3000.0 / 180.0;
 // const pi = Math.PI;  // π
@@ -8,18 +8,33 @@ import {setState, setProgress, getState} from './progress';
 // 百度墨卡托投影纠正矩阵
 const LLBAND = [75, 60, 45, 30, 15, 0];
 const LL2MC = [
-  [-0.0015702102444, 111320.7020616939, 1704480524535203, -10338987376042340, 26112667856603880, -35149669176653700,
-    26595700718403920, -10725012454188240, 1800819912950474, 82.5],
-  [0.0008277824516172526, 111320.7020463578, 647795574.6671607, -4082003173.641316, 10774905663.51142,
-    -15171875531.51559, 12053065338.62167, -5124939663.577472, 913311935.9512032, 67.5],
-  [0.00337398766765, 111320.7020202162, 4481351.045890365, -23393751.19931662, 79682215.47186455, -115964993.2797253,
-    97236711.15602145, -43661946.33752821, 8477230.501135234, 52.5],
-  [0.00220636496208, 111320.7020209128, 51751.86112841131, 3796837.749470245, 992013.7397791013, -1221952.21711287,
-    1340652.697009075, -620943.6990984312, 144416.9293806241, 37.5],
-  [-0.0003441963504368392, 111320.7020576856, 278.2353980772752, 2485758.690035394, 6070.750963243378,
-    54821.18345352118, 9540.606633304236, -2710.55326746645, 1405.483844121726, 22.5],
-  [-0.0003218135878613132, 111320.7020701615, 0.00369383431289, 823725.6402795718, 0.46104986909093,
-    2351.343141331292, 1.58060784298199, 8.77738589078284, 0.37238884252424, 7.45]];
+  [
+    -0.0015702102444, 111320.7020616939, 1704480524535203, -10338987376042340, 26112667856603880,
+    -35149669176653700, 26595700718403920, -10725012454188240, 1800819912950474, 82.5,
+  ],
+  [
+    0.0008277824516172526, 111320.7020463578, 647795574.6671607, -4082003173.641316,
+    10774905663.51142, -15171875531.51559, 12053065338.62167, -5124939663.577472, 913311935.9512032,
+    67.5,
+  ],
+  [
+    0.00337398766765, 111320.7020202162, 4481351.045890365, -23393751.19931662, 79682215.47186455,
+    -115964993.2797253, 97236711.15602145, -43661946.33752821, 8477230.501135234, 52.5,
+  ],
+  [
+    0.00220636496208, 111320.7020209128, 51751.86112841131, 3796837.749470245, 992013.7397791013,
+    -1221952.21711287, 1340652.697009075, -620943.6990984312, 144416.9293806241, 37.5,
+  ],
+  [
+    -0.0003441963504368392, 111320.7020576856, 278.2353980772752, 2485758.690035394,
+    6070.750963243378, 54821.18345352118, 9540.606633304236, -2710.55326746645, 1405.483844121726,
+    22.5,
+  ],
+  [
+    -0.0003218135878613132, 111320.7020701615, 0.00369383431289, 823725.6402795718,
+    0.46104986909093, 2351.343141331292, 1.58060784298199, 8.77738589078284, 0.37238884252424, 7.45,
+  ],
+];
 // 百度墨卡托转回到百度经纬度纠正矩阵
 // const MCBAND = [12890594.86, 8362377.87, 5591021, 3481989.83, 1678043.12, 0];
 // const MC2LL = [[1.410526172116255e-8, 0.00000898305509648872, -1.9939833816331, 200.9824383106796, -187.2403703815547,
@@ -41,7 +56,6 @@ function getRange(cC, cB, T) {
   return cC;
 }
 
-
 function getLoop(cC, cB, T) {
   while (cC > T) {
     cC -= T - cB;
@@ -52,30 +66,32 @@ function getLoop(cC, cB, T) {
   return cC;
 }
 
-
 function convertor(cC, cD) {
   if (cC == null || cD == null) {
     return null;
   }
   let T = cD[0] + cD[1] * Math.abs(cC.x);
   const cB = Math.abs(cC.y) / cD[9];
-  let cE = cD[2] + cD[3] * cB + cD[4] * cB * cB + cD[5] * cB * cB * cB + cD[6] * cB * cB * cB * cB + cD[
-    7] * cB * cB * cB * cB * cB + cD[8] * cB * cB * cB * cB * cB * cB;
+  let cE =
+    cD[2] +
+    cD[3] * cB +
+    cD[4] * cB * cB +
+    cD[5] * cB * cB * cB +
+    cD[6] * cB * cB * cB * cB +
+    cD[7] * cB * cB * cB * cB * cB +
+    cD[8] * cB * cB * cB * cB * cB * cB;
   if (cC.x < 0) {
     T = T * -1;
-  }
-  else {
+  } else {
     // T = T;
   }
   if (cC.y < 0) {
     cE = cE * -1;
-  }
-  else {
+  } else {
     // cE = cE;
   }
   return [T, cE];
 }
-
 
 function convertLL2MC(T) {
   let cD = null;
@@ -111,18 +127,18 @@ function bd09tomercator(lng, lat) {
 }
 
 function getResolution(level) {
-  return Math.pow(2, (level - 18));
+  return Math.pow(2, level - 18);
 }
 
 // 经纬度转瓦片行列号
 function lngToTileX(lng, level) {
   const point = bd09tomercator(lng, 0);
-  return Math.floor(point[0] * getResolution(level) / 256);
+  return Math.floor((point[0] * getResolution(level)) / 256);
 }
 // 经纬度转瓦片行列号
 function latToTileY(lat, level) {
   const point = bd09tomercator(0, lat);
-  return Math.floor(point[1] * getResolution(level) / 256);
+  return Math.floor((point[1] * getResolution(level)) / 256);
 }
 class TileBaidu {
   constructor(data, apiDownload, apiEnsureDirSync) {
@@ -191,18 +207,19 @@ class TileBaidu {
         statistics.percentage = 100;
         setProgress(statistics);
         setState(false);
-        window.$message.success(`下载完成。下载成功${statistics.success}，下载失败${statistics.error}`);
+        window.$message.success(
+          `下载完成。下载成功${statistics.success}，下载失败${statistics.error}`,
+        );
         return;
       }
       const item = list[index];
-      statistics.percentage = Number((index / length * 100).toFixed(2));
+      statistics.percentage = Number(((index / length) * 100).toFixed(2));
       apiDownload(item);
       index++;
     };
     download();
     window.electron.imageDownloadDone(state => {
-
-      if(!getState()) return;
+      if (!getState()) return;
 
       if (state.state === 'completed') {
         statistics.success++;
@@ -285,18 +302,19 @@ export class TileBaiduList {
         statistics.percentage = 100;
         setProgress(statistics);
         setState(false);
-        window.$message.success(`下载完成。下载成功${statistics.success}，下载失败${statistics.error}`);
+        window.$message.success(
+          `下载完成。下载成功${statistics.success}，下载失败${statistics.error}`,
+        );
         return;
       }
       const item = list[index];
-      statistics.percentage = Number((index / length * 100).toFixed(2));
+      statistics.percentage = Number(((index / length) * 100).toFixed(2));
       apiDownload(item);
       index++;
     };
     download();
     window.electron.imageDownloadDone(state => {
-
-      if(!getState()) return;
+      if (!getState()) return;
 
       if (state.state === 'completed') {
         statistics.success++;

@@ -13,7 +13,7 @@
     "paths": {
       "#preload": ["../preload/src/index"],
       "/@/*": ["./src/*"],
-      "@types/*": ["types/*"],
+      "@types/*": ["types/*"]
     },
     "lib": ["ESNext", "dom", "dom.iterable"]
   },

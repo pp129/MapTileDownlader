@@ -1,6 +1,6 @@
-import {app, BrowserWindow} from 'electron';
-import {join} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import { app, BrowserWindow } from 'electron';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import ipcHandle from './ipcMain';
 
 async function createWindow() {
@@ -63,7 +63,6 @@ async function createWindow() {
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
 export async function restoreOrCreateWindow() {
-
   let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
 
   if (window === undefined) {

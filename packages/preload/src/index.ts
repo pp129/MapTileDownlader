@@ -1,7 +1,7 @@
 /**
  * @module preload
  */
-import {contextBridge,ipcRenderer} from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
 const apiKey = 'electron';
 let imageDownloadhandle: any;
@@ -13,14 +13,14 @@ ipcRenderer.on('imageDownloadDone', (event, state) => {
  */
 const api = {
   versions: process.versions,
-  ipcRenderer: {...ipcRenderer},
+  ipcRenderer: { ...ipcRenderer },
   imageDownloadDone: (callback: any) => {
     imageDownloadhandle = callback;
   },
   'show-dialog': () => ipcRenderer.invoke('show-dialog'),
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
-  ensureDir:(path) => ipcRenderer.send('ensure-dir',path),
-  saveImage: (params) => ipcRenderer.send('save-image',params),
+  ensureDir: path => ipcRenderer.send('ensure-dir', path),
+  saveImage: params => ipcRenderer.send('save-image', params),
 };
 
 /**
@@ -31,6 +31,6 @@ const api = {
  */
 contextBridge.exposeInMainWorld(apiKey, api);
 
-import {sha256sum} from './nodeCrypto';
-import {versions} from './versions';
-export {sha256sum, versions};
+import { sha256sum } from './nodeCrypto';
+import { versions } from './versions';
+export { sha256sum, versions };

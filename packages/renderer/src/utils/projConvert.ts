@@ -23,10 +23,7 @@ const definedProjection = () => {
    */
 
   // 注册自定义投影信息-版本引用存在问题 types版本2.5
-  proj4.defs(
-    'EPSG:3395',
-    '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
-  );
+  proj4.defs('EPSG:3395', '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
   // console.log(proj4, proj4.version)
   // proj4.defs('EPSG:4490', '+proj=longlat +ellps=GRS80 +no_defs +type=crs');
   // register(proj4);
@@ -37,10 +34,7 @@ const definedProjection = () => {
     axisOrientation: 'enu',
     // transformFun 函数 transform(coordinate, source, destination)
     // extent: applyTransform([-180, -90, 180, 90], projZh.ll2gcj02mc),
-    extent: [
-      -20037508.342789244, -20037508.34278071, 20037508.342789244,
-      20037508.34278071,
-    ],
+    extent: [-20037508.342789244, -20037508.34278071, 20037508.342789244, 20037508.34278071],
     worldExtent: [-180, -85, 180, 85],
     global: true,
     units: 'm',
@@ -55,18 +49,8 @@ const definedProjection = () => {
   // addCoordinateTransforms('EPSG:3857', gcj02mc, projZh.mc2gcj02mc, projZh.gcj02mc2mc);
 
   addEquivalentProjections([gcj02mc]);
-  addEquivalentTransforms(
-    EPSG4326_PROJECTIONS,
-    [gcj02mc],
-    projZh.ll2gcj02mc,
-    projZh.gcj02mc2ll,
-  );
-  addEquivalentTransforms(
-    EPSG3857_PROJECTIONS,
-    [gcj02mc],
-    projZh.mc2gcj02mc,
-    projZh.gcj02mc2mc,
-  );
+  addEquivalentTransforms(EPSG4326_PROJECTIONS, [gcj02mc], projZh.ll2gcj02mc, projZh.gcj02mc2ll);
+  addEquivalentTransforms(EPSG3857_PROJECTIONS, [gcj02mc], projZh.mc2gcj02mc, projZh.gcj02mc2mc);
 
   // 百度坐标定义注册  const RADIUS = 6378137;
   const baiduMercatorProj = new Projection({
@@ -104,10 +88,7 @@ const definedProjection = () => {
   // 新增兼容海图3395左边系数据 - register没有生成投影注册
   const projection3395 = new Projection({
     code: 'EPSG:3395',
-    extent: [
-      -20037508.342789244, -20037508.342789244, 20037508.342789244,
-      20037508.342789244,
-    ],
+    extent: [-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244],
     worldExtent: [-180, -80, 180, 84],
     global: true,
     units: 'm',
@@ -160,7 +141,6 @@ const definedProjection = () => {
       return projZh.smerc2bmerc(coord, coord, undefined);
     },
   );
-
 
   // 第三方图层定义内容转换
   addEquivalentTransforms(

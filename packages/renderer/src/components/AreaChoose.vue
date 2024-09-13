@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ref, watch, defineEmits, onBeforeUnmount} from 'vue';
-import {getAreaList} from '/@/utils/area-list';
+import { ref, watch, defineEmits, onBeforeUnmount } from 'vue';
+import { getAreaList } from '/@/utils/area-list';
 
 const props = defineProps({
   visible: {
@@ -12,7 +12,7 @@ let showModal = ref(false);
 const layerList = getAreaList();
 const layers = ref(layerList);
 let pattern = ref('');
-const emit = defineEmits(['hide','update:visible','choose']);
+const emit = defineEmits(['hide', 'update:visible', 'choose']);
 watch(
   () => props.visible,
   () => {
@@ -21,15 +21,15 @@ watch(
 );
 const cancel = () => {
   emit('hide');
-  emit('update:visible',false);
+  emit('update:visible', false);
 };
-const handleSelect = (keys, options)=> {
+const handleSelect = (keys, options) => {
   const option = options[0];
   option.fetchLoad().then(geojson => {
-    emit('choose', {option, geojson});
+    emit('choose', { option, geojson });
   });
 };
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
   showModal.value = props.visible;
 });
 </script>
@@ -63,7 +63,7 @@ onBeforeUnmount(()=>{
         :key-field="'areaCode'"
         :label-field="'areaName'"
         :default-expanded-keys="[-1]"
-        :default-expand-all="pattern!==''"
+        :default-expand-all="pattern !== ''"
         :on-update:selected-keys="handleSelect"
         selectable
         virtual-scroll
@@ -73,6 +73,4 @@ onBeforeUnmount(()=>{
   </n-modal>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

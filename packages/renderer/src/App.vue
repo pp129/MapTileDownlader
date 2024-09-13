@@ -1,6 +1,4 @@
-<script lang="ts" setup>
-
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <n-notification-provider>
@@ -10,5 +8,4 @@
   </n-notification-provider>
 </template>
 
-<style>
-</style>
+<style></style>

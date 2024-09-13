@@ -1,6 +1,7 @@
 # Map Tile Downloader
 
-基于 electron 和 maptalks 实现高德地图、百度地图（包括百度自定义地图）、腾讯地图、OpenStreetMap、CartoDb、ArcGIS 在线地图、天地图、MapBox 的下载器
+基于 electron 和 OpenLayers 的地图瓦片下载器。感谢[MapDownload](https://github.com/Hxy1992/MapDownload.git)项目提供的思路。
+
 
 > [!Important]
 >

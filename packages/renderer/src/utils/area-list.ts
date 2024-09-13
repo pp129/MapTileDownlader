@@ -1,7 +1,7 @@
 // 下载范围区域列表
 const modules = import.meta.glob('../geojson/**/*.json');
 
-function formate () {
+function formate() {
   const pre = '../geojson/';
   const ext = '.json';
   const provinceId = 'province';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch, defineEmits, onBeforeUnmount, computed} from 'vue';
+import { ref, watch, defineEmits, onBeforeUnmount, computed } from 'vue';
 
 const props = defineProps({
   visible: {
@@ -153,7 +153,7 @@ onBeforeUnmount(() => {
               disabled
               type="text"
               placeholder="选择下载路径"
-              :style="{width: '80%'}"
+              :style="{ width: '80%' }"
             />
             <n-button
               type="primary"
