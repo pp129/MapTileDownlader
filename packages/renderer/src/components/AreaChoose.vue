@@ -23,9 +23,9 @@ const cancel = () => {
   emit('hide');
   emit('update:visible', false);
 };
-const handleSelect = (keys, options) => {
+const handleSelect = (keys: any, options: any) => {
   const option = options[0];
-  option.fetchLoad().then(geojson => {
+  option.fetchLoad().then((geojson: any) => {
     emit('choose', { option, geojson });
   });
 };

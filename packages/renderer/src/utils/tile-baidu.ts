@@ -1,5 +1,8 @@
 // 瓦片转换
 import { setState, setProgress, getState } from './progress';
+import { platform as platformName } from '#preload';
+
+const slash = platformName === 'win32' ? '\\' : '/'; // 文件路径的斜杠
 
 // const x_pi = Math.PI * 3000.0 / 180.0;
 // const pi = Math.PI;  // π
@@ -49,14 +52,17 @@ const LL2MC = [
 //   -0.6321817810242, -0.00663494467273, 0.03430082397953, -0.00466043876332, 2555164.4],
 // [2.890871144776878e-9, 0.000008983055095805407, -3.068298e-8, 7.47137025468032, -0.00000353937994,
 //   -0.02145144861037, -0.00001234426596, 0.00010322952773, -0.00000323890364, 826088.5]];
-
-function getRange(cC, cB, T) {
+interface T {
+  x: number;
+  y: number;
+}
+function getRange(cC: number, cB: number, T: number) {
   if (cB != null && cB !== undefined) cC = Math.max(cC, cB);
   if (T != null && T !== undefined) cC = Math.min(cC, T);
   return cC;
 }
 
-function getLoop(cC, cB, T) {
+function getLoop(cC: number, cB: number, T: number) {
   while (cC > T) {
     cC -= T - cB;
   }
@@ -66,10 +72,10 @@ function getLoop(cC, cB, T) {
   return cC;
 }
 
-function convertor(cC, cD) {
-  if (cC == null || cD == null) {
-    return null;
-  }
+function convertor(cC: T, cD: any[]) {
+  // if (cC == null || cD == null) {
+  //   return null;
+  // }
   let T = cD[0] + cD[1] * Math.abs(cC.x);
   const cB = Math.abs(cC.y) / cD[9];
   let cE =
@@ -92,9 +98,8 @@ function convertor(cC, cD) {
   }
   return [T, cE];
 }
-
-function convertLL2MC(T) {
-  let cD = null;
+function convertLL2MC(T: T) {
+  let cD: any[] = [];
   T.x = getLoop(T.x, -180, 180);
   T.y = getRange(T.y, -74, 74);
   const cB = T;
@@ -116,32 +121,45 @@ function convertLL2MC(T) {
   return cE;
 }
 
-function LLT(x, y) {
-  this.x = x;
-  this.y = y;
+function LLT(x: number, y: number): T {
+  return {
+    x,
+    y,
+  };
 }
 // bd09投影到百度墨卡托
-function bd09tomercator(lng, lat) {
-  const baidut = new LLT(lng, lat);
+function bd09tomercator(lng: number, lat: number) {
+  const baidut = LLT(lng, lat);
   return convertLL2MC(baidut);
 }
 
-function getResolution(level) {
+function getResolution(level: number) {
   return Math.pow(2, level - 18);
 }
 
 // 经纬度转瓦片行列号
-function lngToTileX(lng, level) {
+function lngToTileX(lng: number, level: number) {
   const point = bd09tomercator(lng, 0);
+  // console.log('x', point);
   return Math.floor((point[0] * getResolution(level)) / 256);
 }
 // 经纬度转瓦片行列号
-function latToTileY(lat, level) {
+function latToTileY(lat: number, level: number) {
   const point = bd09tomercator(0, lat);
+  // console.log('y', point);
   return Math.floor((point[1] * getResolution(level)) / 256);
 }
 class TileBaidu {
-  constructor(data, apiDownload, apiEnsureDirSync) {
+  private rootPath: string;
+  private maxZoom: number;
+  private minZoom: number;
+  private mapExtent: any;
+  private urlTemplate: string;
+  private apiDownload: (arg: any) => void;
+  private apiEnsureDirSync: (arg: string) => void;
+  private titleLayer: string;
+  private list: any[] = []; // 瓦片列表
+  constructor(data: any, apiDownload: (arg: any) => void, apiEnsureDirSync: (arg: string) => void) {
     this.apiDownload = apiDownload;
     this.rootPath = data.savePath; // 文件根目录
     this.maxZoom = data.maxZoom;
@@ -157,7 +175,7 @@ class TileBaidu {
   }
   calcTiles() {
     // 当前绝对路径
-    const downloadPath = this.rootPath + '/';
+    const downloadPath = this.rootPath + slash;
 
     // 下载范围
     const zmin = this.minZoom;
@@ -170,7 +188,7 @@ class TileBaidu {
     // const baseUrl = this.urlTemplate;
     const pictureType = '.png';
     // 遍历URL，获取数据
-    const list = [];
+    const list: any[] = [];
     for (let z = zmin; z < zmax; z++) {
       const top_tile = latToTileY(north_edge, z);
       const left_tile = lngToTileX(west_edge, z);
@@ -182,13 +200,16 @@ class TileBaidu {
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
       for (let x = minLong; x < maxLong; x++) {
-        const temppath = downloadPath + z + '/' + x;
+        const temppath = downloadPath + z + slash + x;
         this.apiEnsureDirSync(temppath);
         for (let y = minLat; y < maxLat; y++) {
           const baseUrl = this.urlTemplate;
-          const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+          const str3 = baseUrl
+            .replace('{z}', z.toString())
+            .replace('{x}', x.toString())
+            .replace('{y}', y.toString());
           // const str3 = this.titleLayer.getTileUrl(x, y, z);
-          const path2 = temppath + '/' + y + pictureType;
+          const path2 = temppath + slash + y + pictureType;
           list.push({ zoom: z, url: str3, savePath: path2 });
         }
       }
@@ -218,7 +239,7 @@ class TileBaidu {
       index++;
     };
     download();
-    window.electron.imageDownloadDone(state => {
+    window.electron.imageDownloadDone((state: any) => {
       if (!getState()) return;
 
       if (state.state === 'completed') {
@@ -233,7 +254,16 @@ class TileBaidu {
 }
 
 export class TileBaiduList {
-  constructor(data, apiDownload, apiEnsureDirSync) {
+  private rootPath: string;
+  private maxZoom: number;
+  private minZoom: number;
+  private mapExtent: any;
+  private urlTemplate: string;
+  private apiDownload: (arg: any) => void;
+  private apiEnsureDirSync: (arg: string) => void;
+  private titleLayer: string;
+  private list: any[] = []; // 瓦片列表
+  constructor(data: any, apiDownload: (arg: any) => void, apiEnsureDirSync: (arg: string) => void) {
     this.apiDownload = apiDownload;
     this.rootPath = data.savePath; // 文件根目录
     this.maxZoom = data.maxZoom;
@@ -244,16 +274,16 @@ export class TileBaiduList {
     this.urlTemplate = data.mapConfig.config.urlTemplate;
     setState(true);
 
-    let list = [];
-    data.mapConfig.titleLayer.forEach(layer => {
+    let list: any[] = [];
+    data.mapConfig.titleLayer.forEach((layer: any) => {
       list = [...list, ...this.calcTiles(layer.getProperties().style, layer)];
     });
     this.list = list;
     this.download();
   }
-  calcTiles(subpath, layer) {
+  calcTiles(subpath: string, layer: any) {
     // 当前绝对路径
-    const downloadPath = this.rootPath + '/' + subpath + '/';
+    const downloadPath = this.rootPath + slash + subpath + slash;
 
     // 下载范围
     const zmin = this.minZoom;
@@ -278,12 +308,12 @@ export class TileBaiduList {
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
       for (let x = minLong; x < maxLong; x++) {
-        const temppath = downloadPath + z + '/' + x;
+        const temppath = downloadPath + z + slash + x;
         this.apiEnsureDirSync(temppath);
         for (let y = minLat; y < maxLat; y++) {
           const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
           // const str3 = this.titleLayer.getTileUrl(x, y, z);
-          const path2 = temppath + '/' + y + pictureType;
+          const path2 = temppath + slash + y + pictureType;
           list.push({ zoom: z, url: str3, savePath: path2 });
         }
       }
@@ -313,7 +343,7 @@ export class TileBaiduList {
       index++;
     };
     download();
-    window.electron.imageDownloadDone(state => {
+    window.electron.imageDownloadDone((state: any) => {
       if (!getState()) return;
 
       if (state.state === 'completed') {

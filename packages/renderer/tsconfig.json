@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "module": "esnext",
     "target": "esnext",
     "sourceMap": false,
@@ -13,7 +14,8 @@
     "paths": {
       "#preload": ["../preload/src/index"],
       "/@/*": ["./src/*"],
-      "@types/*": ["types/*"]
+      "@types/*": ["./types/*"],
+      "types/*": ["./types/*"]
     },
     "lib": ["ESNext", "dom", "dom.iterable"]
   },
@@ -21,7 +23,7 @@
     "src/**/*.vue",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "types/**/*.d.ts",
+    "types/*.d.ts",
     "../../types/**/*.d.ts"
   ],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]

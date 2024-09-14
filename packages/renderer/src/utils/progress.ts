@@ -1,14 +1,14 @@
 // 下载进度
 let downloading = false; // 下载状态
 const statistics = { success: 0, error: 0, percentage: 0, count: 0 }; // 进度统计
-let progressDom = null;
-let successDom = null;
-let errorDom = null;
-let containerDom = null;
+let progressDom: any;
+let successDom: any;
+let errorDom: any;
+let containerDom: any;
 export function getState() {
   return downloading;
 }
-export function setState(val) {
+export function setState(val: boolean) {
   downloading = val;
   if (val) {
     setProgress({ success: 0, error: 0, percentage: 0 });
@@ -18,7 +18,19 @@ export function setState(val) {
 export function getProgress() {
   return statistics;
 }
-export function setProgress(val) {
+interface Progress {
+  success?: number;
+  error?: number;
+  percentage?: number;
+  count?: number;
+}
+interface ProgressDom {
+  progress: any;
+  success: any;
+  error: any;
+  container: any;
+}
+export function setProgress(val: Progress) {
   const { success, error, percentage, count } = val;
   if (typeof success !== 'undefined') statistics.success = success;
   if (typeof error !== 'undefined') statistics.error = error;
@@ -26,13 +38,13 @@ export function setProgress(val) {
   if (typeof count !== 'undefined') statistics.count = count;
   updateProgress();
 }
-export function setProgressDom(val) {
+export function setProgressDom(val: ProgressDom) {
   progressDom = val.progress;
   successDom = val.success;
   errorDom = val.error;
   containerDom = val.container;
 }
-export function showProgress(visible) {
+export function showProgress(visible: boolean) {
   containerDom.style.display = visible ? 'block' : 'none';
 }
 function updateProgress() {

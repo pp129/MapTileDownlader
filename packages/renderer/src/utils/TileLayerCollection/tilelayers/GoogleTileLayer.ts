@@ -3,17 +3,17 @@ import { XYZ } from 'ol/source';
 import params from './../param';
 import type { getTileOptions } from 'types/global';
 
-class GeoqTileLayer extends BaseTileLayer {
-  options = {} as getTileOptions<'GEOQ'>;
-  constructor(id: string, options: getTileOptions<'GEOQ'>) {
-    const style = options.style || 'Colour';
+class GoogleTileLayer extends BaseTileLayer {
+  options = {} as getTileOptions<'Google'>;
+  constructor(id: string, options: getTileOptions<'Google'>) {
+    const style = options.style || 'Normal';
     const xyzOpt = {
-      url: params().GEOQ[style].url,
+      url: params().Google[style].url,
       // projection: 'EPSG:3857',
       crossOrigin: 'anonymous',
     };
     options.id = id;
-    options.urlTemplate = params().GEOQ[style].url;
+    options.urlTemplate = params().Google[style].url;
     const tile = new XYZ(xyzOpt);
     const layerOpt = { ...options, ...{ source: tile } };
     super(layerOpt);
@@ -40,4 +40,4 @@ class GeoqTileLayer extends BaseTileLayer {
   }
 }
 
-export default GeoqTileLayer;
+export default GoogleTileLayer;

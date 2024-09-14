@@ -9,7 +9,6 @@ const props = defineProps({
   extent: {
     type: Array as () => Array<number>,
     required: true,
-    validator: (value: Array<number>) => value.length === 4,
   },
   baseLayer: {
     required: true,

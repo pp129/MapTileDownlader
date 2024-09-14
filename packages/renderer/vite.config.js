@@ -21,6 +21,7 @@ const config = {
     alias: {
       '/@/': join(PACKAGE_ROOT, 'src') + '/',
       '@types/': join(PACKAGE_ROOT, 'types') + '/',
+      'types/': join(PACKAGE_ROOT, 'types') + '/',
     },
   },
   base: './',

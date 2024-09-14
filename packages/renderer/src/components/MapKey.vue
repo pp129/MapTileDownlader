@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, defineEmits, onBeforeUnmount, onMounted } from 'vue';
 import { getKeys, setKeys } from '/@/utils/map-key';
+
 const props = defineProps({
   visible: {
     required: true,
@@ -8,8 +9,8 @@ const props = defineProps({
   },
 });
 let showModal = ref(false);
-let tdtKey = ref('');
-let mapboxKey = ref('');
+let tdtKey = ref<string | null>('');
+let mapboxKey = ref<string | null>('');
 const emit = defineEmits(['hide', 'update:visible']);
 watch(
   () => props.visible,

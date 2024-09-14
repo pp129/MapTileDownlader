@@ -17,10 +17,9 @@ const api = {
   imageDownloadDone: (callback: any) => {
     imageDownloadhandle = callback;
   },
-  'show-dialog': () => ipcRenderer.invoke('show-dialog'),
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
-  ensureDir: path => ipcRenderer.send('ensure-dir', path),
-  saveImage: params => ipcRenderer.send('save-image', params),
+  ensureDir: (path: string) => ipcRenderer.send('ensure-dir', path),
+  saveImage: (params: any) => ipcRenderer.send('save-image', params),
 };
 
 /**
@@ -32,5 +31,5 @@ const api = {
 contextBridge.exposeInMainWorld(apiKey, api);
 
 import { sha256sum } from './nodeCrypto';
-import { versions } from './versions';
-export { sha256sum, versions };
+import { versions, platform } from './versions';
+export { sha256sum, versions, platform };

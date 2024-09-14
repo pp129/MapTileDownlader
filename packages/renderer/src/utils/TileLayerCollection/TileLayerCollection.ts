@@ -9,15 +9,17 @@ import MapboxTileLayer from './tilelayers/MapboxTileLayer';
 import BaiduTileLayer from './tilelayers/BaiduTileLayer';
 import { Group as LayerGroup } from 'ol/layer';
 import Utils from './utils';
+import type { getTileOptions } from 'types/global';
 
 class TileLayerCollection {
-  getTdtTileLayer(id, options = {}) {
+  getTdtTileLayer(id: string, options: getTileOptions<'TDT'>) {
+    const tileOptions: any = { ...options };
     const baseLayers = [];
     const baseLayer = new TdtTileLayer(Utils.uuid(), options);
     baseLayers.push(baseLayer);
     if (options.style) {
-      options.style = options.style + '_Label';
-      const baseLayer1 = new TdtTileLayer(Utils.uuid(), options);
+      tileOptions.style = options.style + '_Label';
+      const baseLayer1 = new TdtTileLayer(Utils.uuid(), tileOptions);
       baseLayers.push(baseLayer1);
     }
     options.group = true;
@@ -27,28 +29,25 @@ class TileLayerCollection {
     });
   }
 
-  getGeoqTileLayer(id, options = {}) {
+  getGeoqTileLayer(id: string, options: getTileOptions<'GEOQ'>) {
     const baseLayer = new GeoqTileLayer(id, options);
     return baseLayer;
   }
 
-  getGoogleTileLayer(id, options = {}) {
+  getGoogleTileLayer(id: string, options: getTileOptions<'Google'>) {
     const baseLayer = new GoogleTileLayer(id, options);
     return baseLayer;
   }
 
-  getAmapTileLayer(id, options = {}) {
-    console.log(options);
+  getAmapTileLayer(id: string, options: getTileOptions<'Amap'>) {
+    const tileOptions: getTileOptions<'Amap'> = { ...options };
     if (options.style === 'Satellite') {
-      const baseLayers = [];
       const baseLayer = new AmapTileLayer(Utils.uuid(), options);
-      baseLayers.push(baseLayer);
-      options.style = options.style + '_Label';
-      const baseLayer1 = new AmapTileLayer(Utils.uuid(), options);
-      baseLayers.push(baseLayer1);
+      tileOptions.style = 'Satellite_Label';
+      const labelLayer = new AmapTileLayer(Utils.uuid(), tileOptions);
       options.group = true;
       return new LayerGroup({
-        layers: baseLayers,
+        layers: [baseLayer, labelLayer],
         properties: options,
       });
     } else {
@@ -56,7 +55,8 @@ class TileLayerCollection {
     }
   }
 
-  getTencentTileLayer(id, options = {}) {
+  getTencentTileLayer(id: string, options: getTileOptions<'Tencent'>) {
+    const tileOptions: any = { ...options };
     if (options.style === 'Normal') {
       options.group = false;
       return new TencentTileLayer(id, options);
@@ -64,8 +64,8 @@ class TileLayerCollection {
       const baseLayers = [];
       const baseLayer = new TencentTileLayer(Utils.uuid(), options);
       baseLayers.push(baseLayer);
-      options.style = options.style + '_Label';
-      const baseLayer1 = new TencentTileLayer(Utils.uuid(), options);
+      tileOptions.style = options.style + '_Label';
+      const baseLayer1 = new TencentTileLayer(Utils.uuid(), tileOptions);
       baseLayers.push(baseLayer1);
       options.group = true;
       return new LayerGroup({
@@ -75,25 +75,26 @@ class TileLayerCollection {
     }
   }
 
-  getOsmTileLayer(id, options = {}) {
+  getOsmTileLayer(id: string, options: getTileOptions<'Osm'>) {
     return new OsmTileLayer(id, options);
   }
 
-  getCartoDbTileLayer(id, options = {}) {
+  getCartoDbTileLayer(id: string, options: getTileOptions<'CartoDb'>) {
     return new CartoDbTileLayer(id, options);
   }
 
-  getMapboxTileLayer(id, options = {}) {
+  getMapboxTileLayer(id: string, options: getTileOptions<'Mapbox'>) {
     return new MapboxTileLayer(id, options);
   }
 
-  getBaiduTileLayer(id, options = {}) {
+  getBaiduTileLayer(id: string, options: getTileOptions<'Baidu'>) {
+    const tileOptions: any = { ...options };
     if (options.style === 'Satellite') {
       const baseLayers = [];
       const baseLayer = new BaiduTileLayer(Utils.uuid(), options);
       baseLayers.push(baseLayer);
-      options.style = options.style + '_Label';
-      const baseLayer1 = new BaiduTileLayer(Utils.uuid(), options);
+      tileOptions.style = options.style + '_Label';
+      const baseLayer1 = new BaiduTileLayer(Utils.uuid(), tileOptions);
       baseLayers.push(baseLayer1);
       options.group = true;
       return new LayerGroup({

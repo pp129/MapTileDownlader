@@ -11,6 +11,7 @@ import { getMapList } from '/@/utils/layer-list';
 import { getKeys } from '/@/utils/map-key';
 import type { Layer } from 'ol/layer';
 import type { Projection } from 'ol/proj';
+import type MapEvent from 'ol/MapEvent';
 
 const layerList = getMapList();
 window.$message = useMessage();
@@ -33,6 +34,17 @@ const getMapViewExtent = () => {
   // saveLayers.value = {};
   visible.value = true;
 };
+interface TypeSave {
+  savePath: string;
+  minZoom: number;
+  maxZoom: number;
+  extent: {
+    xmin: number;
+    ymin: number;
+    xmax: number;
+    ymax: number;
+  };
+}
 const save = (params: TypeSave) => {
   // console.log(params);
   visible.value = false;
@@ -94,14 +106,19 @@ const handleSelect = (key: any, layer: any) => {
 const setArea = () => {
   areaVisible.value = true;
 };
-const onAreaChoose = ({ geojson, option }) => {
+interface GeoJsonData {
+  geojson: any;
+  option: any;
+}
+const onAreaChoose = ({ geojson, option }: GeoJsonData) => {
   console.log('onAreaChoose', option);
   areaName.value = option.areaName;
   map.value.addGeometry(geojson);
 };
-const zoomEnd = (evt: Event) => {
+const zoomEnd = (evt: MapEvent) => {
   getMapView();
-  evt.map.once('moveend', (evt: Event) => {
+  console.log('zoomEnd', evt);
+  evt.map.once('moveend', (evt: MapEvent) => {
     zoomEnd(evt);
   });
 };
@@ -122,7 +139,7 @@ onMounted(() => {
   // 层级变化
   getMapView();
   map.value.map.getView().once('change:resolution', () => {
-    map.value.map.once('moveend', (evt: Event) => {
+    map.value.map.once('moveend', (evt: MapEvent) => {
       zoomEnd(evt);
     });
   });

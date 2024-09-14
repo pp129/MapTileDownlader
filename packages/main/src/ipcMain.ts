@@ -1,3 +1,4 @@
+import type { BrowserWindow } from 'electron';
 import { dialog, ipcMain } from 'electron';
 import { requestHandle } from './ipHandle';
 const fse = require('fs-extra');
@@ -5,21 +6,18 @@ const fs = require('fs');
 const sharp = require('sharp');
 const request = require('superagent');
 
-async function handleFileOpen(properties: string[]) {
+async function handleFileOpen() {
   return await dialog.showOpenDialog({
-    properties: ['openDirectory', 'createDirectory'].concat(properties),
+    properties: ['openDirectory', 'createDirectory'],
   });
 }
 ipcMain.handle('dialog:openFile', handleFileOpen);
-ipcMain.handle('show-dialog', async () => {
-  return await dialog.showOpenDialog({ properties: ['openFile', 'openDirectory'] });
-});
 // 确保目录存在，不存在则创建
 ipcMain.on('ensure-dir', (event, args) => {
   fse.ensureDirSync(args);
 });
 
-function ipcHandle(win) {
+function ipcHandle(win: BrowserWindow) {
   // superagent & sharp 下载图片
   ipcMain.on('save-image', (event, args) => {
     const sharpStream = sharp({
@@ -32,16 +30,18 @@ function ipcHandle(win) {
         .toFile(args.savePath),
     );
     // got.stream(args.url).pipe(sharpStream);
-    // request.get(args.url).pipe(sharpStream);
+    // console.log('save-image url', args.url);
+    // console.log('save-image sharpStream', sharpStream);
     requestHandle(request.get(args.url)).pipe(sharpStream);
+    // request.get(args.url).pipe(sharpStream);
     Promise.all(promises)
       .then(() => {
         win.webContents.send('imageDownloadDone', {
           state: 'completed',
         });
       })
-      .catch(() => {
-        // console.error('Error processing files, let\'s clean it up', err);
+      .catch(err => {
+        console.error("Error processing files, let's clean it up", err);
         try {
           fs.unlinkSync(args.savePath);
         } catch (e) {

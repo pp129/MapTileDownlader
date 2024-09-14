@@ -66,93 +66,12 @@ const mapList: typeMapList[] = [
         },
       },
       {
-        label: '清新蓝',
-        value: 'light',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-清新蓝',
-        },
-      },
-      {
         label: '黑夜',
         value: 'dark',
         projection: 'BD:09',
         exteral: {
           subdomains: BaiduConstomSubdomains,
           attribution: '百度-自定义-黑夜',
-        },
-      },
-      {
-        label: '红色警戒',
-        value: 'redalert',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-红色警戒',
-        },
-      },
-      {
-        label: '精简(仿google)',
-        value: 'googlelite',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-精简',
-        },
-      },
-      {
-        label: '自然绿',
-        value: 'grassgreen',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-自然绿',
-        },
-      },
-      {
-        label: '浪漫粉',
-        value: 'pink',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-浪漫粉',
-        },
-      },
-      {
-        label: '青春绿',
-        value: 'darkgreen',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-青春绿',
-        },
-      },
-      {
-        label: '清新蓝绿',
-        value: 'bluish',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-清新蓝绿',
-        },
-      },
-      {
-        label: '高端灰',
-        value: 'grayscale',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-高端灰',
-        },
-      },
-      {
-        label: '强边界',
-        value: 'hardedge',
-        projection: 'BD:09',
-        exteral: {
-          subdomains: BaiduConstomSubdomains,
-          attribution: '百度-自定义-强边界',
         },
       },
     ],
@@ -216,7 +135,7 @@ const mapList: typeMapList[] = [
         },
       },
       {
-        label: '山地图',
+        label: '人道救援图',
         value: 'Humanitarian',
         projection: 'EPSG:3857',
         exteral: {

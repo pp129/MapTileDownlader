@@ -79,7 +79,7 @@ const LL2MC = [
 ];
 const X_PI = (PI * 3000) / 180;
 
-const forEachPoint = (func: Function) => {
+const forEachPoint = (func: (input: any, output: any, offset: any) => void) => {
   const transferFun = (input: string | any[], opt_output: any, opt_dimension: any) => {
     const len = input.length;
     const dimension = opt_dimension ? opt_dimension : 2;

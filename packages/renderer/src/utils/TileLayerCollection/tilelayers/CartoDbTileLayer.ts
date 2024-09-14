@@ -1,19 +1,19 @@
 import BaseTileLayer from './BaseTileLayer';
 import { XYZ } from 'ol/source';
-import params from './../param';
 import type { getTileOptions } from 'types/global';
+import params from './../param';
 
-class GeoqTileLayer extends BaseTileLayer {
-  options = {} as getTileOptions<'GEOQ'>;
-  constructor(id: string, options: getTileOptions<'GEOQ'>) {
-    const style = options.style || 'Colour';
+class CartoDbTileLayer extends BaseTileLayer {
+  options = {} as getTileOptions<'CartoDb'>;
+  constructor(id: string, options: getTileOptions<'CartoDb'>) {
+    const style = options.style || 'light';
     const xyzOpt = {
-      url: params().GEOQ[style].url,
+      url: params().CartoDb[style].url,
       // projection: 'EPSG:3857',
       crossOrigin: 'anonymous',
     };
     options.id = id;
-    options.urlTemplate = params().GEOQ[style].url;
+    options.urlTemplate = params().CartoDb[style].url;
     const tile = new XYZ(xyzOpt);
     const layerOpt = { ...options, ...{ source: tile } };
     super(layerOpt);
@@ -40,4 +40,4 @@ class GeoqTileLayer extends BaseTileLayer {
   }
 }
 
-export default GeoqTileLayer;
+export default CartoDbTileLayer;

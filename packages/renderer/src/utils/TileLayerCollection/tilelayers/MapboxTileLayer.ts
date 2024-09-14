@@ -1,21 +1,21 @@
 import BaseTileLayer from './BaseTileLayer';
-import { XYZ } from 'ol/source';
 import params from './../param';
+import { XYZ } from 'ol/source';
 import type { getTileOptions } from 'types/global';
 
-class GeoqTileLayer extends BaseTileLayer {
-  options = {} as getTileOptions<'GEOQ'>;
-  constructor(id: string, options: getTileOptions<'GEOQ'>) {
-    const style = options.style || 'Colour';
+class MapboxTileLayer extends BaseTileLayer {
+  options = {} as getTileOptions<'Mapbox'>;
+  constructor(id: string, options: getTileOptions<'Mapbox'>) {
+    const style = options.style || 'Normal';
     const xyzOpt = {
-      url: params().GEOQ[style].url,
+      url: params().Mapbox[style].url,
       // projection: 'EPSG:3857',
       crossOrigin: 'anonymous',
     };
     options.id = id;
-    options.urlTemplate = params().GEOQ[style].url;
+    options.urlTemplate = params().Mapbox[style].url;
     const tile = new XYZ(xyzOpt);
-    const layerOpt = { ...options, ...{ source: tile } };
+    const layerOpt = { ...options, source: tile };
     super(layerOpt);
     this.options = options;
   }
@@ -40,4 +40,4 @@ class GeoqTileLayer extends BaseTileLayer {
   }
 }
 
-export default GeoqTileLayer;
+export default MapboxTileLayer;

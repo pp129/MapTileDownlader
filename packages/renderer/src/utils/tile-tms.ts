@@ -1,13 +1,19 @@
 // 瓦片转换
 import { setState, setProgress, getState } from './progress';
+import { downloadLoop } from './download';
+import type BaseTileLayer from '/@/utils/TileLayerCollection/tilelayers/BaseTileLayer';
+import { platform as platformName } from '#preload';
+
+const slash = platformName === 'win32' ? '\\' : '/'; // 文件路径的斜杠
+
 // 经纬度转瓦片行列号
-function long2tile(lon, zoom) {
+function long2tile(lon: number, zoom: number) {
   return Math.floor(((lon + 180) / 360) * Math.pow(2, zoom));
 }
 
 // 经纬度转瓦片行列号Google
 // eslint-disable-next-line
-function lat2tileGoogle(lat, zoom) {
+function lat2tileGoogle(lat: number, zoom: number) {
   return Math.floor(
     ((1 -
       Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) /
@@ -17,7 +23,7 @@ function lat2tileGoogle(lat, zoom) {
 }
 // 经纬度转瓦片行列号TMS
 // eslint-disable-next-line
-function lat2tileTMS(lat, zoom) {
+function lat2tileTMS(lat: number, zoom: number) {
   return (
     (1 << zoom) -
     Math.floor(
@@ -33,7 +39,16 @@ function lat2tileTMS(lat, zoom) {
  * 下载TMS瓦片
  */
 export class TileTMS {
-  constructor(data, apiDownload, apiEnsureDirSync) {
+  private readonly apiDownload: (arg0: any) => void; // 下载函数
+  private readonly rootPath: string; // 文件根目录
+  private readonly maxZoom: number; // 最大缩放级别
+  private readonly minZoom: number; // 最小缩放级别
+  private mapExtent: any; // 下载范围
+  private readonly urlTemplate: string; // 下载地址
+  private readonly apiEnsureDirSync: (arg0: string) => void; // 创建文件夹
+  private titleLayer: any; // 图层
+  private list: any[] = []; // 瓦片列表
+  constructor(data: any, apiDownload: (arg: any) => void, apiEnsureDirSync: (arg: string) => void) {
     this.apiDownload = apiDownload;
     this.rootPath = data.savePath; // 文件根目录
     this.maxZoom = data.maxZoom;
@@ -42,14 +57,13 @@ export class TileTMS {
     // this.projection = data.mapConfig.projection.code; // BAIDU,EPSG:4326,EPSG:3857
     this.urlTemplate = data.mapConfig.config.urlTemplate;
     this.apiEnsureDirSync = apiEnsureDirSync;
-    this.titleLayer = data.mapConfig.titleLayer;
+    this.titleLayer = data.mapConfig.titleLayer[0];
     setState(true);
-    this.calcTiles();
-    this.download();
+    downloadLoop(this.calcTiles(), this.apiDownload);
   }
   calcTiles() {
     // 当前绝对路径
-    const downloadPath = this.rootPath + '/';
+    const downloadPath = this.rootPath + slash;
 
     // 下载范围
     const zmin = this.minZoom;
@@ -59,7 +73,7 @@ export class TileTMS {
     const west_edge = this.mapExtent.xmin;
     const east_edge = this.mapExtent.xmax;
     // 下载地址
-    const baseUrl = this.urlTemplate;
+    // const baseUrl = this.urlTemplate;
     const pictureType = '.png';
     // 遍历URL，获取数据
     const list = [];
@@ -74,51 +88,20 @@ export class TileTMS {
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
       for (let x = minLong; x <= maxLong; x++) {
-        const temppath = downloadPath + z + '/' + x;
+        const temppath = downloadPath + z + slash + x;
         this.apiEnsureDirSync(temppath);
         for (let y = minLat; y <= maxLat; y++) {
-          const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
-          // const str3 = this.titleLayer.getTileUrl(x, y, z);
-          const path2 = temppath + '/' + y + pictureType;
+          // const str3 = baseUrl
+          //   .replace('{z}', z.toString())
+          //   .replace('{x}', x.toString())
+          //   .replace('{y}', y.toString());
+          const str3 = this.titleLayer.getTileUrl(x, y, z);
+          const path2 = temppath + slash + y + pictureType;
           list.push({ zoom: z, url: str3, savePath: path2 });
         }
       }
     }
-    this.list = list;
-  }
-  download() {
-    let index = 0;
-    const length = this.list.length;
-    if (length === 0) return;
-    const list = this.list;
-    const apiDownload = this.apiDownload;
-    const statistics = { success: 0, error: 0, percentage: 0, count: length };
-    const download = () => {
-      if (index >= length) {
-        statistics.percentage = 100;
-        setProgress(statistics);
-        setState(false);
-        window.$message.success(
-          `下载完成。下载成功${statistics.success}，下载失败${statistics.error}`,
-        );
-        return;
-      }
-      const item = list[index];
-      statistics.percentage = Number(((index / length) * 100).toFixed(2));
-      apiDownload(item);
-      index++;
-    };
-    download();
-    window.electron.imageDownloadDone(state => {
-      if (!getState()) return;
-      if (state.state === 'completed') {
-        statistics.success++;
-      } else {
-        statistics.error++;
-      }
-      setProgress(statistics);
-      download();
-    });
+    return list;
   }
 }
 
@@ -126,7 +109,16 @@ export class TileTMS {
  * 下载TMS瓦片集合
  */
 export class TileTMSList {
-  constructor(data, apiDownload, apiEnsureDirSync) {
+  list: any[] = [];
+  rootPath: string;
+  maxZoom: number;
+  minZoom: number;
+  mapExtent: any;
+  apiDownload: (args: any) => void;
+  apiEnsureDirSync: (arg0: string) => void;
+  titleLayer: any;
+  urlTemplate: string;
+  constructor(data: any, apiDownload: (arg: any) => void, apiEnsureDirSync: (arg: string) => void) {
     this.apiDownload = apiDownload;
     this.rootPath = data.savePath; // 文件根目录
     this.maxZoom = data.maxZoom;
@@ -137,16 +129,15 @@ export class TileTMSList {
     this.urlTemplate = data.mapConfig.config.urlTemplate;
     setState(true);
 
-    let list = [];
-    data.mapConfig.titleLayer.forEach(layer => {
+    let list: any[] = [];
+    data.mapConfig.titleLayer.forEach((layer: BaseTileLayer) => {
       list = [...list, ...this.calcTiles(layer.getProperties().style, layer)];
     });
-    this.list = list;
-    this.download();
+    downloadLoop(list, this.apiDownload);
   }
-  calcTiles(subpath, layer) {
+  calcTiles(subpath: string, layer: any) {
     // 当前绝对路径
-    const downloadPath = this.rootPath + '/' + subpath + '/';
+    const downloadPath = this.rootPath + slash + subpath + slash;
 
     // 下载范围
     const zmin = this.minZoom;
@@ -156,7 +147,7 @@ export class TileTMSList {
     const west_edge = this.mapExtent.xmin;
     const east_edge = this.mapExtent.xmax;
     // 下载地址
-    const baseUrl = layer.getProperties().urlTemplate || this.urlTemplate;
+    // const baseUrl = layer.getProperties().urlTemplate || this.urlTemplate;
     const pictureType = '.png';
     // 遍历URL，获取数据
     const list = [];
@@ -171,51 +162,17 @@ export class TileTMSList {
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
       for (let x = minLong; x <= maxLong; x++) {
-        const temppath = downloadPath + z + '/' + x;
+        const temppath = downloadPath + z + slash + x;
         this.apiEnsureDirSync(temppath);
         for (let y = minLat; y <= maxLat; y++) {
-          const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
-          // const str3 = layer.getTileUrl(x, y, z);
-          const path2 = temppath + '/' + y + pictureType;
+          // const str3 = baseUrl.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+          const str3 = layer.getTileUrl(x, y, z);
+          const path2 = temppath + slash + y + pictureType;
           list.push({ zoom: z, url: str3, savePath: path2 });
         }
       }
     }
     return list;
-  }
-  download() {
-    let index = 0;
-    const length = this.list.length;
-    if (length === 0) return;
-    const list = this.list;
-    const apiDownload = this.apiDownload;
-    const statistics = { success: 0, error: 0, percentage: 0, count: length };
-    const download = () => {
-      if (index >= length) {
-        statistics.percentage = 100;
-        setProgress(statistics);
-        setState(false);
-        window.$message.success(
-          `下载完成。下载成功${statistics.success}，下载失败${statistics.error}`,
-        );
-        return;
-      }
-      const item = list[index];
-      statistics.percentage = Number(((index / length) * 100).toFixed(2));
-      apiDownload(item);
-      index++;
-    };
-    download();
-    window.electron.imageDownloadDone(state => {
-      if (!getState()) return;
-      if (state.state === 'completed') {
-        statistics.success++;
-      } else {
-        statistics.error++;
-      }
-      setProgress(statistics);
-      download();
-    });
   }
 }
 
@@ -223,7 +180,15 @@ export class TileTMSList {
  * 下载TMS瓦片集合，合并多张瓦片
  */
 export class TileTMSListMerge {
-  constructor(data, apiDownload, apiEnsureDirSync) {
+  list: any[];
+  rootPath: string;
+  maxZoom: number;
+  minZoom: number;
+  mapExtent: any;
+  titleLayer: any;
+  apiDownload: (args: any) => void;
+  apiEnsureDirSync: (args: string) => void;
+  constructor(data: any, apiDownload: (arg: any) => void, apiEnsureDirSync: (arg: string) => void) {
     this.apiDownload = apiDownload;
     this.rootPath = data.savePath; // 文件根目录
     this.maxZoom = data.maxZoom;
@@ -236,9 +201,9 @@ export class TileTMSListMerge {
     this.list = this.calcTiles(data.mapConfig.titleLayer);
     this.download();
   }
-  calcTiles(layers) {
+  calcTiles(layers: any[]) {
     // 当前绝对路径
-    const downloadPath = this.rootPath + '/';
+    const downloadPath = this.rootPath + slash;
 
     // 下载范围
     const zmin = this.minZoom;
@@ -262,13 +227,13 @@ export class TileTMSListMerge {
       if (minLat < 0) minLat = 0;
       const maxLat = Math.max(bottom_tile, top_tile);
       for (let x = minLong; x <= maxLong; x++) {
-        const temppath = downloadPath + z + '/' + x;
+        const temppath = downloadPath + z + slash + x;
         this.apiEnsureDirSync(temppath);
         for (let y = minLat; y <= maxLat; y++) {
           const str3 = layers.map(ll => {
             return { url: ll.getTileUrl(x, y, z), isLabel: ll.config().style.includes('_Label') };
           });
-          const path2 = temppath + '/' + y + pictureType;
+          const path2 = temppath + slash + y + pictureType;
           list.push({ zoom: z, layers: str3, savePath: path2 });
         }
       }
@@ -298,7 +263,7 @@ export class TileTMSListMerge {
       index++;
     };
     download();
-    window.electron.imageDownloadDone(state => {
+    window.electron.imageDownloadDone((state: any) => {
       if (!getState()) return;
       if (state.state === 'completed') {
         statistics.success++;

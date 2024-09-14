@@ -17,6 +17,7 @@ import type { Layer } from 'ol/layer';
 import { Vector as VectorLayer } from 'ol/layer';
 import GeoJSON from 'ol/format/GeoJSON';
 import definedProjection from '/@/utils/projConvert';
+import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 class TMap {
   private map: any;
@@ -61,7 +62,7 @@ class TMap {
     map.addLayer(this._vectorLayer);
     this.map = map;
     // 鼠标悬浮
-    this.map.on('pointermove', (evt: PointerEvent) => {
+    this.map.on('pointermove', (evt: MapBrowserEvent<PointerEvent>) => {
       const pixel = this.map.getEventPixel(evt.originalEvent);
       const hit = this.map.hasFeatureAtPixel(pixel);
       this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
@@ -108,7 +109,7 @@ class TMap {
   // 获取瓦片图层参数
   getBaseMapConfig() {}
   // 添加geojson至地图
-  addGeometry(geojson) {
+  addGeometry(geojson: any) {
     this._vectorLayer.getSource().clear();
     const features = new GeoJSON().readFeatures(geojson);
     const featureGeometry = features[0].getGeometry();

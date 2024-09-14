@@ -2,6 +2,7 @@
 
 //浏览器库
 const userAgents = [
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
   'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.12) Gecko/20070731 Ubuntu/dapper-security Firefox/1.5.0.12',
   'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)',
   'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11',
@@ -40,12 +41,13 @@ function returnIp() {
 }
 
 // 每100次请求，更换一次ip
+// TODO 天地图有访问限制，应该需要更换ip和延迟下载
 let count = 100;
 const Max = 100;
 /**
  * 获取请求
  */
-export function requestHandle(request) {
+export function requestHandle(request: any) {
   if (count > Max) {
     request.set('User-Agent', randomHead()).set('X-Forwarded-For', returnIp());
     count = 0;

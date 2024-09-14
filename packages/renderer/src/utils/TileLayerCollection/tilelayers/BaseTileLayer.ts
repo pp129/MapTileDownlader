@@ -1,8 +1,9 @@
-import BaseLayer from 'ol/layer/Base';
-class BaseTileLayer extends BaseLayer {
-  constructor(id, options) {
-    super(id, options);
-  }
+import { Tile } from 'ol/layer';
+import type { default as TileSourceType } from 'ol/source/Tile';
+class BaseTileLayer extends Tile<TileSourceType> {
+  // constructor(id, options) {
+  //   super(id, options);
+  // }
 }
 
 export default BaseTileLayer;

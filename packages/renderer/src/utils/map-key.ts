@@ -17,7 +17,7 @@ export function getKeys() {
  * 设置key
  * @param {*} param key对象
  */
-export function setKeys(param) {
+export function setKeys(param: { tdtKey: string; mapboxKey: string }) {
   localStorage.setItem(TDTKEY, param?.tdtKey);
   localStorage.setItem(MAPBOXKEY, param?.mapboxKey);
 }

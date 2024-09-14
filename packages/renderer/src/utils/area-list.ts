@@ -6,9 +6,9 @@ function formate() {
   const ext = '.json';
   const provinceId = 'province';
   const cityId = 'city';
-  const contryList = [];
+  const contryList: any[] = [];
   const provinceList = [];
-  const cityMap = {};
+  const cityMap: any = {};
   for (const path in modules) {
     const params = path.substring(pre.length, path.length - ext.length).split('/');
     if (params.length === 1) {
@@ -44,7 +44,7 @@ function formate() {
     }
   }
   for (let index = 0; index < provinceList.length; index++) {
-    const province = provinceList[index];
+    const province: any = provinceList[index];
     province.children = cityMap[province.provinceCode];
   }
   contryList[0].children = provinceList;
