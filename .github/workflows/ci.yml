@@ -40,10 +40,11 @@ jobs:
 # tests:
 #    uses: ./.github/workflows/tests.yml
   draft_release:
+    if: ${{ contains(github.event.head_commit.message, 'release') }}
     permissions:
       contents: write # Allows this job to create releases
     with:
-      dry-run: ${{ github.event_name != 'push' || github.ref_name != 'main' || contains(github.event.head_commit.message, 'release') == false }}
+      dry-run: ${{ github.event_name != 'push' || github.ref_name != 'main'}}
     needs: [ typechecking ]
     uses: ./.github/workflows/release.yml
 
