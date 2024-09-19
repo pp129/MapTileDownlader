@@ -28,12 +28,13 @@ jobs:
       fail-fast: true
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
+        # 通过矩阵匹配不同的打包环境下的sharp安装参数
         include:
           - os: macos-latest
             args: '--include=optional'
           - os: ubuntu-latest
             args: '--cpu=x64 --os=linux --libc=glibc'
-#         - args: [ '--cpu=arm64 --os=darwin', '--cpu=x64 --os=linux --libc=glibc', '']
+          # - args: [ '--cpu=arm64 --os=darwin', '--cpu=x64 --os=linux --libc=glibc', '']
 
     runs-on: ${{ matrix.os }}
 
@@ -44,6 +45,7 @@ jobs:
         with:
           cache: 'npm'
       - run: npm ci
+      # 不同打包环境下，sharp安装参数不同
       - run: npm install ${{ matrix.args }} sharp
 
         env:

@@ -20,12 +20,13 @@ import definedProjection from '/@/utils/projConvert';
 import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 class TMap {
-  private map: any;
-  private _vectorLayer: any;
+  private map: any; // 地图对象
+  private _vectorLayer: any; // 区域图层
 
   constructor(id: string) {
     this.createMap(id);
   }
+  // 创建地图
   createMap(id: string) {
     // 初始化定义投影参数
     definedProjection();
@@ -47,15 +48,14 @@ class TMap {
         new Rotate(),
       ]),
     });
+    // 添加区域图层
     const source = new VectorSource();
     this._vectorLayer = new VectorLayer({
       source,
       style: {
-        'fill-color': 'rgba(255, 255, 255, 0.6)',
-        'stroke-color': '#ffcc33',
+        'fill-color': 'rgba(6,168,249,0.1)',
+        'stroke-color': 'rgba(6,168,249,1)',
         'stroke-width': 2,
-        'circle-radius': 7,
-        'circle-fill-color': '#ffcc33',
       },
       zIndex: 9,
     });
@@ -69,9 +69,11 @@ class TMap {
     });
     this.switchBaseLayer(defaultMap());
   }
+  // 获取地图对象
   getMap() {
     return this.map;
   }
+  // 切换底图
   switchBaseLayer(param: any) {
     const methodName = 'get' + param.parent + 'TileLayer';
     const style = param.layer.value;
@@ -82,7 +84,6 @@ class TMap {
     });
     baseLayer.set('base', true);
     baseLayer.setZIndex(0);
-    console.log(baseLayer.getProperties());
     const layers = this.map
       .getLayers()
       .getArray()
@@ -94,20 +95,6 @@ class TMap {
     }
     this.map.addLayer(baseLayer);
   }
-  // 绘制矩形、编辑矩形位置
-  startDraw() {}
-  getDrawLayer() {
-    return this._vectorLayer;
-  }
-  // 结束绘制
-  endDraw() {}
-  // 获取下载范围
-  getDownloadExtent() {
-    if (!this._vectorLayer) return null;
-    return this._vectorLayer.getExtent();
-  }
-  // 获取瓦片图层参数
-  getBaseMapConfig() {}
   // 添加geojson至地图
   addGeometry(geojson: any) {
     this._vectorLayer.getSource().clear();
@@ -120,10 +107,9 @@ class TMap {
   fitExtent() {
     this.map.fitExtent(this._vectorLayer.getExtent(), 0);
   }
-
+  // 获取地图范围
   getMapViewExtent() {
     return this.map.getView().calculateExtent(this.map.getSize());
-    // return this._vectorLayer.getExtent();
   }
 }
 
